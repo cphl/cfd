@@ -25,7 +25,7 @@ def forward_difference(nt, dt, c, xmax, ic):
     return all_solutions
 
 
-def timestep(ic, method='fd', nt=25, dt=0.025, c=1, xmax=2.0):
+def timestep(ic, method='fd', nt=50, dt=0.025, c=1, xmax=2.0):
     """ Time step an initial condition using a given iteration method
     ic -- initial condition (array with known x values at t=0)
     method -- options for timestepping methods: 'fd' = forward difference
@@ -46,7 +46,7 @@ def timestep(ic, method='fd', nt=25, dt=0.025, c=1, xmax=2.0):
 xmax = 2.0
 nx = 41
 dx = xmax/(nx-1)  # dx = 0.025 will mess up the IC
-nt = 25
+nt = 50
 test_ic = numpy.zeros((1, nx))  # put at assert to accept 1-by-nx ICs
 test_ic[0, 0.5/dx: 1/dx + 1] = 2
 

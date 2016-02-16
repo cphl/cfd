@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 15 23:30:10 2016
-Test way of running anumate in a nested fashion
+Animates by drawing every solution provided in a time-stepped solutions array
 @author: cepuuher
 """
 import numpy
 from matplotlib import pyplot
 from matplotlib import animation
 
+# TODO: add option to sample from provided array, important for high timesteps
+
 
 def animate_it(solutions):
-    """ Accept the solution array (nt by nx), product animated plot"""
+    """ Accept the solution array (nt by nx), produce animated plot"""
     # useful numbers extrated from solutsion array
     nx = len(solutions[0])  # number of points along x
     xmin = min(solutions[0])
@@ -37,5 +38,5 @@ def animate_it(solutions):
     # interval -- milliseconds between drawing new frames (was 20)
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                    frames=50, interval=80, blit=True)
-    
+
     pyplot.show()
