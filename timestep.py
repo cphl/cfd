@@ -11,9 +11,6 @@ import numpy
 def forward_difference(nt, dt, c, xmax, ic):
     """ Use forward differencing to time step the initial condition"""
     nx = ic.size  # number of x value to solve for
-    print xmax
-    print nx
-    print nx-1
     dx = xmax / (nx-1)  # set CFL constraint
 
     all_solutions = numpy.zeros((nt, nx))  # initialize array

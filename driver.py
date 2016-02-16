@@ -29,7 +29,8 @@ test_ic = numpy.zeros((1, nx))  # put at assert to accept 1-by-nx ICs
 test_ic[0, 0.5/dx: 1/dx + 1] = 2
 test_solution = ts.timestep(test_ic, 'fd')
 
-sp.plot_at(24, test_solution)
+sp.plot_at(0, test_solution)
+sp.plot_at(30, test_solution)
 sa.animate_it(test_solution)
 
 
@@ -38,5 +39,6 @@ test_ic_2 = test_ic.copy()
 test_ic_2[0, 0.7/dx: 0.9/dx] = 0
 test_solution_2 = ts.timestep(test_ic_2, 'fd')
 sp.plot_at(0, test_solution_2)  # see initial condition
-sp.plot_at(24, test_solution_2)  # see final state
+sp.plot_at(24, test_solution_2)  # see intermediate step
+sp.plot_at(49, test_solution_2)  # see final state #BUG: clipped
 sa.animate_it(test_solution_2)
