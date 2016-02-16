@@ -42,13 +42,12 @@ def timestep(ic, method='fd', nt=25, dt=0.025, c=1, xmax=2.0):
     return all_solutions
 
 
-## Sample initial condition and code for testing
-#dx = 0.025
-#nt = 25
-#nx = 41
-#test_ic = numpy.zeros((1, nx))  # put at assert to accept 1-by-nx ICs
-#test_ic[0, 0.5/dx: 1/dx + 1] = 2
-#
-#test_solution = timestep(test_ic, 'fd')
-## TODO: well, this does SOMETHIHNG, but it's not the solution (compare prev)
-## That plot is WEIRD!
+# Sample initial condition and code for testing
+xmax = 2.0
+nx = 41
+dx = xmax/(nx-1)  # dx = 0.025 will mess up the IC
+nt = 25
+test_ic = numpy.zeros((1, nx))  # put at assert to accept 1-by-nx ICs
+test_ic[0, 0.5/dx: 1/dx + 1] = 2
+
+test_solution = timestep(test_ic, 'fd')
