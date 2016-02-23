@@ -17,7 +17,8 @@ plt.plot(x, y, linewidth=4.0)
 line, = plt.plot(x, y, '-')
 line.set_antialiased(True)  # I don't notice the difference True/False
 
-plt.show()
+plt.draw()
+#plt.show()
 
 # ------------------------------------------------------------- #
 
@@ -33,7 +34,8 @@ plt.plot(t1, f(t1), 'bo', t2, f(t2), 'k')
 
 plt.subplot(212)
 plt.plot(t2, np.cos(2*np.pi*t2), 'r--')
-plt.show()
+plt.draw()
+#plt.show()
 # -------------------------------------------------------------- #
 plt.figure(1)                # the first figure
 plt.subplot(211)             # the first subplot in the first figure
