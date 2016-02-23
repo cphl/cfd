@@ -8,10 +8,14 @@ from matplotlib import pyplot
 from matplotlib import animation
 
 # TODO: add option to sample from provided array, important for high timesteps
+# Use something like solutions[::stride_length, :]
+# TODO: not sure best place to filter this out
 
-
-def animate_it(solutions):
-    """ Accept the solution array (nt by nx), produce animated plot"""
+def animate_it(solutions, stride=1):
+    """ Accept the solution array (nt by nx), produce animated plot
+    Default to selecting every timestepped solution,
+    otherwise take every stride-th solution (e.g. stride=2 takes every other)
+    """
     # useful numbers extrated from solutsion array
     nx = len(solutions[0])  # number of points along x
     xmin = min(solutions[0])
