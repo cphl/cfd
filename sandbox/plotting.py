@@ -17,8 +17,8 @@ plt.plot(x, y, linewidth=4.0)
 line, = plt.plot(x, y, '-')
 line.set_antialiased(True)  # I don't notice the difference True/False
 
-plt.draw()
-#plt.show()
+#plt.draw()
+plt.show(block=False)
 
 # ------------------------------------------------------------- #
 
@@ -34,8 +34,8 @@ plt.plot(t1, f(t1), 'bo', t2, f(t2), 'k')
 
 plt.subplot(212)
 plt.plot(t2, np.cos(2*np.pi*t2), 'r--')
-plt.draw()
-#plt.show()
+#plt.draw()
+plt.show(block=False)
 # -------------------------------------------------------------- #
 plt.figure(1)                # the first figure
 plt.subplot(211)             # the first subplot in the first figure
@@ -50,7 +50,7 @@ plt.plot([4, 5, 6])          # creates a subplot(111) by default
 plt.figure(1)                # figure 1 current; subplot(212) still current
 plt.subplot(211)             # make subplot(211) in figure1 current
 plt.title('Easy as 1, 2, 3') # subplot 211 title
-plt.show()
+plt.show(block=False)
 # ---------------------------------------- #
 mu, sigma = 100, 15
 x = mu + sigma * np.random.randn(10000)
