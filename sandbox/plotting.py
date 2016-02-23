@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.figure(7)
 plt.plot([1,2,3,4], [2, 4, 1, 8], 'ro')
 plt.ylabel('some numbers')
 plt.axis([0, 6, 0, 20])  # [xmin, xmax, ymin, ymax] and 'viewport' (?)
@@ -28,7 +29,7 @@ def f(t):
 t1 = np.arange(0.0, 5.0, 0.1)
 t2 = np.arange(0.0, 5.0, 0.02)
 
-plt.figure(1)
+plt.figure(6)
 plt.subplot(211)
 plt.plot(t1, f(t1), 'bo', t2, f(t2), 'k')
 
@@ -52,6 +53,7 @@ plt.subplot(211)             # make subplot(211) in figure1 current
 plt.title('Easy as 1, 2, 3') # subplot 211 title
 plt.show(block=False)
 # ---------------------------------------- #
+plt.figure(5)
 mu, sigma = 100, 15
 x = mu + sigma * np.random.randn(10000)
 
@@ -65,4 +67,4 @@ plt.title('Histogram of IQ')
 plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
 plt.axis([40, 160, 0, 0.03])
 plt.grid(True)
-plt.show()
+plt.show()  # final one needs to be without the blck=False otherwise can't see
