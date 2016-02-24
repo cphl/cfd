@@ -18,6 +18,8 @@ import numpy
 import timestep as ts
 import simple_plot as sp
 import simple_animate as sa
+from matplotlib import pyplot
+
 
 # Sample initial condition and code for testing
 #dx = 0.025
@@ -42,3 +44,4 @@ sp.plot_at(0, test_solution_2)  # see initial condition
 sp.plot_at(24, test_solution_2)  # see intermediate step
 sp.plot_at(49, test_solution_2)  # see final state #BUG: clipped
 sa.animate_it(test_solution_2)
+pyplot.show()  # to make it show after all the previous non-blocking figures

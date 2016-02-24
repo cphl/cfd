@@ -43,4 +43,4 @@ def animate_it(solutions, stride=1):
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                    frames=50, interval=80, blit=True)
 
-    pyplot.show()
+    pyplot.show(block=False)

@@ -22,5 +22,8 @@ def plot_at(t, solutions, debug_on=False):
     xmin = min(solutions[0])
     xmax = max(solutions[0])
     xgrid = numpy.linspace(xmin, xmax, nx)  # future might not be even-spaced
+    pyplot.figure()
     pyplot.axes(xlim=(0, 4), ylim=(0, 2.5))
-    pyplot.show(pyplot.plot(xgrid, solutions[t]))
+#    pyplot.show(pyplot.plot(xgrid, solutions[t]))
+    pyplot.plot(xgrid, solutions[t])
+    pyplot.show(block=False)
