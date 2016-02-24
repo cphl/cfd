@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-12 steps: step 5
+12 steps: step 5, 6
 # If IPython console is open in Spyder/Anaconda it's not happy.
 # But it'll run if starting from WITHOUT IPython console open, IN Spyder
 # Does not work at terminal with either python or ipython :(
@@ -35,10 +35,6 @@ un = numpy.ones((ny, nx))
 u[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2
 
 
-# Turn on interactive mode on, plots will show and not block
-# I believe 'pylab.ion()' also works in the same cases described above
-pyplot.ion()
-
 ###Plot Initial Condition
 fig = pyplot.figure(figsize=(11, 7), dpi=100)
 ##the figsize parameter can be used to produce different sized images
@@ -66,4 +62,5 @@ for n in range(nt+1):  # loop across number of time steps
 fig = pyplot.figure(figsize=(11, 7), dpi=100)
 ax = fig.gca(projection='3d')
 surf2 = ax.plot_surface(X, Y, u[:])
-#pyplot.show()  # This will show the figures afterward, but want immediate
+pyplot.show()
+# --- End of Step 5, Start Step 6 from here --- #
