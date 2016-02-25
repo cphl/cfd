@@ -15,8 +15,8 @@ import numpy
 from matplotlib import pyplot
 
 ###variable declarations
-nx = 81
-ny = 81
+nx = 111  # 81
+ny = 111  # 81
 nt = 100
 c = 1
 dx = 2/(nx-1)

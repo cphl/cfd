@@ -10,9 +10,9 @@ from matplotlib import pyplot
 import numpy
 
 ###variable declarations
-nx = 41
-ny =  41
-nt = 120
+nx = 501  # was 41, 501 made it solid-looking instead of wireframe
+ny = 101  # was 41
+nt = 3000  # was 120, then tried 500 didn't show much change, rounder edges...
 dx = 2/(nx-1)
 dy = 2/(ny-1)
 sigma = .0009
