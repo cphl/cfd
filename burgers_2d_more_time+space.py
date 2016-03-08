@@ -10,9 +10,10 @@ from matplotlib import pyplot
 import numpy
 
 ###variable declarations
-nx = 501  # was 41, 501 made it solid-looking instead of wireframe
-ny = 101  # was 41
-nt = 3000  # was 120, then tried 500 didn't show much change, rounder edges...
+nx = 601  # was 41, 501 made it solid-looking instead of wireframe
+ny = 601  # was 41
+nt = 6000  # was 120, then tried 500 didn't show much change, rounder edges...
+# 1001, 6000 gives somethign of a square block also, only 2 colour diffs kinda
 dx = 2/(nx-1)
 dy = 2/(ny-1)
 sigma = .0009
@@ -27,7 +28,7 @@ u = numpy.ones((ny, nx))  # create a 1xn vector of 1's
 v = numpy.ones((ny, nx))
 un = numpy.ones((ny, nx))
 vn = numpy.ones((ny, nx))
-comb = numpy.ones((ny, nx))
+#comb = numpy.ones((ny, nx))  # appears to have no use?
 
 ###Assign initial conditions
 
@@ -38,8 +39,8 @@ v[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC: u(.5<=x<=1 && .5<=y<=1 ) is 2
 fig = pyplot.figure(figsize=(11, 7), dpi=100)
 ax = fig.gca(projection='3d')
 X, Y = numpy.meshgrid(x, y)
-wire1 = ax.plot_wireframe(X, Y, u[:], cmap=cm.coolwarm)
-wire2 = ax.plot_wireframe(X, Y, v[:], cmap=cm.coolwarm)
+wire1 = ax.plot_surface(X, Y, u[:], cmap=cm.coolwarm)
+wire2 = ax.plot_surface(X, Y, v[:], cmap=cm.coolwarm)
 #ax.set_xlim(1,2)
 #ax.set_ylim(1,2)
 #ax.set_zlim(1,5)
@@ -75,8 +76,11 @@ for n in range(nt+1):  # loop across number of time steps
 fig = pyplot.figure(figsize=(11, 7), dpi=100)
 ax = fig.gca(projection='3d')
 X, Y = numpy.meshgrid(x, y)
-wire1 = ax.plot_wireframe(X, Y, u)
-wire2 = ax.plot_wireframe(X, Y, v)
+#wire1 = ax.plot_wireframe(X, Y, u)
+#wire2 = ax.plot_wireframe(X, Y, v)
+# Plot surface instead, since we have close grid spacing
+wire1 = ax.plot_surface(X, Y, u, cmap=cm.gist_heat)
+wire2 = ax.plot_surface(X, Y, v, cmap=cm.gist_heat)
 #ax.set_xlim(1,2)
 #ax.set_ylim(1,2)
 #ax.set_zlim(1,5)
