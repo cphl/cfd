@@ -25,7 +25,6 @@ def solve_burgers(nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
     dy = 2/(ny-1)
     dt = sigma*dx*dy/nu
 
-    # TODO: add a dimension to arrays for saving solutions at every timestep
     u = numpy.ones((ny, nx, nt))  # 1 spatial soln per distinct value of t
     v = numpy.ones((ny, nx, nt))
 
@@ -71,34 +70,56 @@ sigma = 0.0009
 nu = 0.01
 
 u_solution, v_solution = solve_burgers(nx, ny, nt, sigma, nu)
-# Originally, in the non-function form, initial and final states were plotted
-# (plot ICs) (from beforloop)
-fig = pyplot.figure(figsize=(11, 7), dpi=100)
-ax = fig.gca(projection='3d')
+
+
+def plot2D(x, y, u_solution, v_solution, t):
+    """t is the timestep number"""
+    fig = pyplot.figure(figsize=(11, 7), dpi=100)
+    ax = fig.gca(projection='3d')
+    X, Y = numpy.meshgrid(x, y)
+    #surf = ax.plot_surface(X, Y , p[:, :, t], rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False )
+    surf1 = ax.plot_surface(X, Y, u_solution[:, :, t], cmap=cm.gist_heat)
+    surf2 = ax.plot_surface(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
+#    ax.set_xlim(0, 2)
+#    ax.set_ylim(0, 2)
+#    ax.view_init(30, 225)
+
+# try using the plot function
 x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)
+plot2D(x, y, u_solution, v_solution, -1)
 
-X, Y = numpy.meshgrid(x, y)
-# Plot surface, we have small grid (matplotlib bug for wireframe)
-surf1 = ax.plot_surface(X, Y, u_solution[:, :, 0], cmap=cm.gist_heat)
-surf2 = ax.plot_surface(X, Y, v_solution[:, :, 0], cmap=cm.gist_heat)
-
-#ax.set_xlim(1,2)
-#ax.set_ylim(1,2)
-#ax.set_zlim(1,5)
-
-pyplot.show(block=False)
-
-
-# Now just plot final state
-fig = pyplot.figure(figsize=(11, 7), dpi=100)
-ax = fig.gca(projection='3d')
-x = numpy.linspace(0, 2, nx)
-y = numpy.linspace(0, 2, ny)
-X, Y = numpy.meshgrid(x, y)
-surf1 = ax.plot_surface(X, Y, u_solution[:, :, -1], cmap=cm.gist_heat)
-surf2 = ax.plot_surface(X, Y, v_solution[:, :, -1], cmap=cm.gist_heat)
-#ax.set_xlim(1,2)
-#ax.set_ylim(1,2)
-#ax.set_zlim(1,5)
 pyplot.show()
+## Originally, in the non-function form, initial and final states were plotted
+## (plot ICs) (from beforloop)
+#fig = pyplot.figure(figsize=(11, 7), dpi=100)
+#ax = fig.gca(projection='3d')
+#x = numpy.linspace(0, 2, nx)
+#y = numpy.linspace(0, 2, ny)
+#
+#X, Y = numpy.meshgrid(x, y)
+## Plot surface, we have small grid (matplotlib bug for wireframe)
+#surf1 = ax.plot_surface(X, Y, u_solution[:, :, 0], cmap=cm.gist_heat)
+#surf2 = ax.plot_surface(X, Y, v_solution[:, :, 0], cmap=cm.gist_heat)
+#
+##ax.set_xlim(1,2)
+##ax.set_ylim(1,2)
+##ax.set_zlim(1,5)
+#
+#pyplot.show(block=False)
+#
+#
+## Now just plot final state
+#fig = pyplot.figure(figsize=(11, 7), dpi=100)
+#ax = fig.gca(projection='3d')
+#x = numpy.linspace(0, 2, nx)
+#y = numpy.linspace(0, 2, ny)
+#X, Y = numpy.meshgrid(x, y)
+#surf1 = ax.plot_surface(X, Y, u_solution[:, :, -1], cmap=cm.gist_heat)
+#surf2 = ax.plot_surface(X, Y, v_solution[:, :, -1], cmap=cm.gist_heat)
+##ax.set_xlim(1,2)
+##ax.set_ylim(1,2)
+##ax.set_zlim(1,5)
+#pyplot.show()
+#
+## TODO: animate it
