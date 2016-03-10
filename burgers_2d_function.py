@@ -25,6 +25,7 @@ def solve_burgers(nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
     dy = 2/(ny-1)
     dt = sigma*dx*dy/nu
 
+    # TODO: add a dimension to the array so that we save solutions at every time
     u = numpy.ones((ny, nx))  # create a 1xn vector of 1's
     v = numpy.ones((ny, nx))
     un = numpy.ones((ny, nx))
@@ -92,7 +93,6 @@ u_solution, v_solution = solve_burgers(nx, ny, nt, sigma, nu)
 
 
 # Now just plot final state
-# TODO: add a dimension to the array so that we save solutions at every time
 fig = pyplot.figure(figsize=(11, 7), dpi=100)
 ax = fig.gca(projection='3d')
 x = numpy.linspace(0, 2, nx)
