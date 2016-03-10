@@ -10,10 +10,12 @@ from matplotlib import pyplot
 import numpy
 
 ###variable declarations
-nx = 601  # was 41, 501 made it solid-looking instead of wireframe
-ny = 601  # was 41
-nt = 6000  # was 120, then tried 500 didn't show much change, rounder edges...
-# 1001, 6000 gives somethign of a square block also, only 2 colour diffs kinda
+nx = 101  # was 41, 501 made it solid-looking instead of wireframe
+ny = 101  # was 41
+nt = 2000  # was 120, then tried 500 didn't show much change, rounder edges...
+# 1001, 6000 gives something of a square block also, only 2 colour diffs kinda
+# 301, 5000 rounded block
+# 101, 2000 good for seeing very rounded edges
 dx = 2/(nx-1)
 dy = 2/(ny-1)
 sigma = .0009
@@ -24,7 +26,7 @@ dt = sigma*dx*dy/nu
 x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)
 
-u = numpy.ones((ny, nx))  # create a 1xn vector of 1's
+u = numpy.ones((ny, nx))  # create an ny by nx array of 1's
 v = numpy.ones((ny, nx))
 un = numpy.ones((ny, nx))
 vn = numpy.ones((ny, nx))
