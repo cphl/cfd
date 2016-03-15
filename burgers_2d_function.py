@@ -11,9 +11,10 @@ from matplotlib import pyplot
 import numpy
 
 
-def solve_burgers(u0, v0, nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
+def solve_burgers(u0, v0, area=[3, 2], nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
     """Timestep for Burgers.
     u0, v0 -- initial conditions, ny by nx arrays
+    plot_area = [x_size, y_size] -- the x by y area of interest
     nx, ny -- size of spatial grid in x and y
     nt -- number of timesteps
     sigma -- default is 0.0009
@@ -21,8 +22,8 @@ def solve_burgers(u0, v0, nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
     Returns 2d array of solutions.
     """
 
-    dx = 2/(nx-1)
-    dy = 2/(ny-1)
+    dx = area[0]/(nx-1)
+    dy = area[1]/(ny-1)
     dt = sigma*dx*dy/nu
 
     u = numpy.ones((ny, nx, nt))  # 1 spatial soln per distinct value of t
@@ -63,14 +64,15 @@ def solve_burgers(u0, v0, nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
 
 
 # Call the function with these parameters
-nx = 101
-ny = 101
+nx = 81
+ny = 81
 nt = 800  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
 nu = 0.01
+area = [3, 2]  # original was 2 x 2
 
 # Hat function (for initial condition), original given:
-dx = 2/(nx-1)
+dx = 3/(nx-1)
 dy = 2/(ny-1)
 dt = sigma*dx*dy/nu
 u0 = numpy.ones((ny, nx))
@@ -79,7 +81,7 @@ u0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
 v0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
 
 
-u_solution, v_solution = solve_burgers(u0, v0, nx, ny, nt, sigma, nu)
+u_solution, v_solution = solve_burgers(u0, v0, area, nx, ny, nt, sigma, nu)
 
 
 def plot2D(u_solution, v_solution, t):
