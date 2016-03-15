@@ -11,13 +11,13 @@ from matplotlib import pyplot
 import numpy
 
 
-def solve_burgers(nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
+def solve_burgers(u0, v0, nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
     """Timestep for Burgers.
-    nx, ny -- size of spatial gridding in x and y
+    u0, v0 -- initial conditions, ny by nx arrays
+    nx, ny -- size of spatial grid in x and y
     nt -- number of timesteps
     sigma -- default is 0.0009
     nu -- default 0.01
-    u, v --initial conditions
     Returns 2d array of solutions.
     """
 
@@ -29,8 +29,8 @@ def solve_burgers(nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
     v = numpy.ones((ny, nx, nt))
 
     # Set initial conditions
-    u[.5/dy:1/dy+1, .5/dx:1/dx+1, 0] = 2  # hat func IC
-    v[.5/dy:1/dy+1, .5/dx:1/dx+1, 0] = 2  # hat func IC
+    u[:, :, 0] = u0  # hat func IC
+    v[:, :, 0] = v0  # hat func IC
 
     for t in range(nt-1):  # loop across number of time steps, was nt+1
 
@@ -69,7 +69,17 @@ nt = 200  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
 nu = 0.01
 
-u_solution, v_solution = solve_burgers(nx, ny, nt, sigma, nu)
+# Hat function (for initial condition), original given:
+dx = 2/(nx-1)
+dy = 2/(ny-1)
+dt = sigma*dx*dy/nu
+u0 = numpy.ones((ny, nx))
+v0 = numpy.ones((ny, nx))
+u0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
+v0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
+
+
+u_solution, v_solution = solve_burgers(u0, v0, nx, ny, nt, sigma, nu)
 
 
 def plot2D(x, y, u_solution, v_solution, t):
@@ -90,36 +100,5 @@ y = numpy.linspace(0, 2, ny)
 plot2D(x, y, u_solution, v_solution, -1)
 
 pyplot.show()
-## Originally, in the non-function form, initial and final states were plotted
-## (plot ICs) (from beforloop)
-#fig = pyplot.figure(figsize=(11, 7), dpi=100)
-#ax = fig.gca(projection='3d')
-#x = numpy.linspace(0, 2, nx)
-#y = numpy.linspace(0, 2, ny)
-#
-#X, Y = numpy.meshgrid(x, y)
-## Plot surface, we have small grid (matplotlib bug for wireframe)
-#surf1 = ax.plot_surface(X, Y, u_solution[:, :, 0], cmap=cm.gist_heat)
-#surf2 = ax.plot_surface(X, Y, v_solution[:, :, 0], cmap=cm.gist_heat)
-#
-##ax.set_xlim(1,2)
-##ax.set_ylim(1,2)
-##ax.set_zlim(1,5)
-#
-#pyplot.show(block=False)
-#
-#
-## Now just plot final state
-#fig = pyplot.figure(figsize=(11, 7), dpi=100)
-#ax = fig.gca(projection='3d')
-#x = numpy.linspace(0, 2, nx)
-#y = numpy.linspace(0, 2, ny)
-#X, Y = numpy.meshgrid(x, y)
-#surf1 = ax.plot_surface(X, Y, u_solution[:, :, -1], cmap=cm.gist_heat)
-#surf2 = ax.plot_surface(X, Y, v_solution[:, :, -1], cmap=cm.gist_heat)
-##ax.set_xlim(1,2)
-##ax.set_ylim(1,2)
-##ax.set_zlim(1,5)
-#pyplot.show()
-#
-## TODO: animate it
+# TODO: instead of surface, do 2D colourmap to show value
+# TODO: animate it
