@@ -11,7 +11,7 @@ import numpy
 
 ###variable declarations
 nx = 41
-ny =  41
+ny = 41
 nt = 120
 dx = 2/(nx-1)
 dy = 2/(ny-1)

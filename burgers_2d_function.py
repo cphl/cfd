@@ -63,9 +63,9 @@ def solve_burgers(u0, v0, nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
 
 
 # Call the function with these parameters
-nx = 81
-ny = 81
-nt = 200  # start smaller while creating 3d arrays to hold all solutions
+nx = 101
+ny = 101
+nt = 800  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
 nu = 0.01
 
@@ -82,8 +82,10 @@ v0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
 u_solution, v_solution = solve_burgers(u0, v0, nx, ny, nt, sigma, nu)
 
 
-def plot2D(x, y, u_solution, v_solution, t):
+def plot2D(u_solution, v_solution, t):
     """t is the timestep number"""
+    x = numpy.linspace(0, 2, size(u_solution,1))  # min, max, nx
+    y = numpy.linspace(0, 2, size(u_solution,0))  # min, max, ny
     fig = pyplot.figure(figsize=(11, 7), dpi=100)
     ax = fig.gca(projection='3d')
     X, Y = numpy.meshgrid(x, y)
@@ -95,10 +97,13 @@ def plot2D(x, y, u_solution, v_solution, t):
 #    ax.view_init(30, 225)
 
 # try using the plot function
-x = numpy.linspace(0, 2, nx)
-y = numpy.linspace(0, 2, ny)
-plot2D(x, y, u_solution, v_solution, -1)
 
+plot2D(u_solution, v_solution, -1)  # -1 gives the final time
 pyplot.show()
+
+
 # TODO: instead of surface, do 2D colourmap to show value
+def plot2D_flat (u_solution, v_solution, t):
+    pass
+
 # TODO: animate it
