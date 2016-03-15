@@ -64,9 +64,9 @@ def solve_burgers(u0, v0, area=[3, 2], nx=501, ny=101, nt=3000, sigma=0.0009, nu
 
 
 # Call the function with these parameters
-nx = 81
-ny = 81
-nt = 800  # start smaller while creating 3d arrays to hold all solutions
+nx = 201
+ny = 41
+nt = 2000  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
 nu = 0.01
 area = [3, 2]  # original was 2 x 2
@@ -83,7 +83,7 @@ v0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
 
 u_solution, v_solution = solve_burgers(u0, v0, area, nx, ny, nt, sigma, nu)
 
-
+# TODO: avoid hard-coding 0 and 2 in the plot function(s)
 def plot2D(u_solution, v_solution, t):
     """t is the timestep number"""
     x = numpy.linspace(0, 2, size(u_solution,1))  # min, max, nx
@@ -98,14 +98,23 @@ def plot2D(u_solution, v_solution, t):
 #    ax.set_ylim(0, 2)
 #    ax.view_init(30, 225)
 
-# try using the plot function
-
-plot2D(u_solution, v_solution, -1)  # -1 gives the final time
-pyplot.show()
+# using the plot surface function
+#plot2D(u_solution, v_solution, -1)  # -1 gives the final time
+#pyplot.show()
 
 
 # TODO: instead of surface, do 2D colourmap to show value
 def plot2D_flat (u_solution, v_solution, t):
-    pass
+    """t is the timestep number (i.e. which solution to plot, -1 = final)"""
+    x = numpy.linspace(0, 2, size(u_solution,1))  # min, max, nx
+    y = numpy.linspace(0, 2, size(u_solution,0))  # min, max, ny
+    fig = pyplot.figure(figsize=(11, 7), dpi=100)
+    X, Y = numpy.meshgrid(x, y)
+    #surf = ax.plot_surface(X, Y , p[:, :, t], rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False )
+    surf1 = pyplot.pcolor(X, Y, u_solution[:, :, t], cmap=cm.gist_heat)
+    surf2 = pyplot.pcolor(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
 
+# use flat plot function
+plot2D_flat(u_solution, v_solution, -1)
+pyplot.show()  #THAT LOOKS SO COOL!!!
 # TODO: animate it
