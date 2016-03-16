@@ -11,7 +11,8 @@ from matplotlib import pyplot
 import numpy
 
 
-def solve_burgers(u0, v0, area=[3, 2], nx=501, ny=101, nt=3000, sigma=0.0009, nu=0.01):
+def solve_burgers(u0, v0, area=[3, 2], nx=501, ny=101,
+                  nt=3000, sigma=0.0009, nu=0.01):
     """Timestep for Burgers.
     u0, v0 -- initial conditions, ny by nx arrays
     plot_area = [x_size, y_size] -- the x by y area of interest
@@ -83,11 +84,12 @@ v0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
 
 u_solution, v_solution = solve_burgers(u0, v0, area, nx, ny, nt, sigma, nu)
 
+
 # TODO: avoid hard-coding 0 and 2 in the plot function(s)
 def plot2D(u_solution, v_solution, t):
     """t is the timestep number"""
-    x = numpy.linspace(0, 2, size(u_solution,1))  # min, max, nx
-    y = numpy.linspace(0, 2, size(u_solution,0))  # min, max, ny
+    x = numpy.linspace(0, 2, numpy.size(u_solution, 1))  # min, max, nx
+    y = numpy.linspace(0, 2, numpy.size(u_solution, 0))  # min, max, ny
     fig = pyplot.figure(figsize=(11, 7), dpi=100)
     ax = fig.gca(projection='3d')
     X, Y = numpy.meshgrid(x, y)
@@ -104,10 +106,10 @@ def plot2D(u_solution, v_solution, t):
 
 
 # TODO: instead of surface, do 2D colourmap to show value
-def plot2D_flat (u_solution, v_solution, t):
+def plot2D_flat(u_solution, v_solution, t):
     """t is the timestep number (i.e. which solution to plot, -1 = final)"""
-    x = numpy.linspace(0, 2, size(u_solution,1))  # min, max, nx
-    y = numpy.linspace(0, 2, size(u_solution,0))  # min, max, ny
+    x = numpy.linspace(0, 2, numpy.size(u_solution, 1))  # min, max, nx
+    y = numpy.linspace(0, 2, numpy.size(u_solution, 0))  # min, max, ny
     fig = pyplot.figure(figsize=(11, 7), dpi=100)
     X, Y = numpy.meshgrid(x, y)
     #surf = ax.plot_surface(X, Y , p[:, :, t], rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False )
@@ -115,6 +117,8 @@ def plot2D_flat (u_solution, v_solution, t):
     surf2 = pyplot.pcolor(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
 
 # use flat plot function
+plot2D_flat(u_solution, v_solution, 0)
+pyplot.show(block=False)
 plot2D_flat(u_solution, v_solution, -1)
 pyplot.show()  #THAT LOOKS SO COOL!!!
 # TODO: animate it
