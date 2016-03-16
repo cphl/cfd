@@ -64,30 +64,11 @@ def solve_burgers(u0, v0, area=[3, 2], nx=501, ny=101,
     return (u, v)
 
 
-# Call the function with these parameters
-nx = 201
-ny = 41
-nt = 2000  # start smaller while creating 3d arrays to hold all solutions
-sigma = 0.0009
-nu = 0.01
-area = [3, 2]  # original was 2 x 2
-
-# Hat function (for initial condition), original given:
-dx = 3/(nx-1)
-dy = 2/(ny-1)
-dt = sigma*dx*dy/nu
-u0 = numpy.ones((ny, nx))
-v0 = numpy.ones((ny, nx))
-u0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
-v0[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
-
-
-u_solution, v_solution = solve_burgers(u0, v0, area, nx, ny, nt, sigma, nu)
-
-
 # TODO: avoid hard-coding 0 and 2 in the plot function(s)
 def plot2D(u_solution, v_solution, t):
-    """t is the timestep number"""
+    """t is the timestep number
+    Example usage: plot2D(u_solution, v_solution, -1)  # -1 for `final time'
+    """
     x = numpy.linspace(0, 2, numpy.size(u_solution, 1))  # min, max, nx
     y = numpy.linspace(0, 2, numpy.size(u_solution, 0))  # min, max, ny
     fig = pyplot.figure(figsize=(11, 7), dpi=100)
@@ -100,14 +81,12 @@ def plot2D(u_solution, v_solution, t):
 #    ax.set_ylim(0, 2)
 #    ax.view_init(30, 225)
 
-# using the plot surface function
-#plot2D(u_solution, v_solution, -1)  # -1 gives the final time
-#pyplot.show()
-
 
 # TODO: instead of surface, do 2D colourmap to show value
 def plot2D_flat(u_solution, v_solution, t):
-    """t is the timestep number (i.e. which solution to plot, -1 = final)"""
+    """t is the timestep number (i.e. which solution to plot, -1 = final)
+    Example usage: plot2D_flat(u_solution, v_solution, -1)
+    """
     x = numpy.linspace(0, 2, numpy.size(u_solution, 1))  # min, max, nx
     y = numpy.linspace(0, 2, numpy.size(u_solution, 0))  # min, max, ny
     fig = pyplot.figure(figsize=(11, 7), dpi=100)
@@ -116,9 +95,4 @@ def plot2D_flat(u_solution, v_solution, t):
     surf1 = pyplot.pcolor(X, Y, u_solution[:, :, t], cmap=cm.gist_heat)
     surf2 = pyplot.pcolor(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
 
-# use flat plot function
-plot2D_flat(u_solution, v_solution, 0)
-pyplot.show(block=False)
-plot2D_flat(u_solution, v_solution, -1)
-pyplot.show()  #THAT LOOKS SO COOL!!!
 # TODO: animate it
