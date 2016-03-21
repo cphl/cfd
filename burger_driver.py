@@ -7,8 +7,8 @@ Vary input parameters including initial conditions here
 """
 from __future__ import division
 import numpy
-import burgers_2d_function as bgr
 from matplotlib import pyplot
+import burgers_2d_function as bgr
 
 
 # Call the function with these parameters
@@ -67,3 +67,5 @@ bgr.plot2D_flat(u_soln, v_soln, 0)
 pyplot.show(block=False)
 bgr.plot2D_flat(u_soln, v_soln, 155)
 pyplot.show()
+
+#TODO: write a simple_animate for surfaces and/or 2D-colourmap
