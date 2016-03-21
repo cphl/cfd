@@ -92,7 +92,8 @@ def plot2D_flat(u_solution, v_solution, t):
     fig = pyplot.figure(figsize=(11, 7), dpi=100)
     X, Y = numpy.meshgrid(x, y)
     #surf = ax.plot_surface(X, Y , p[:, :, t], rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False )
-    surf1 = pyplot.pcolor(X, Y, u_solution[:, :, t], cmap=cm.gist_heat)
-    surf2 = pyplot.pcolor(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
+    # TODO: using pcolormesh for larger arrays, was pcolor originally
+    surf1 = pyplot.pcolormesh(X, Y, u_solution[:, :, t], cmap=cm.gist_heat)
+    surf2 = pyplot.pcolormesh(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
 
 # TODO: animate it
