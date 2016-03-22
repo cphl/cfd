@@ -18,8 +18,8 @@ animate = True
 
 
 # Call the function with these parameters
-nx = 41
-ny = 41
+nx = 61
+ny = 61
 nt = 800  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
 nu = 0.01  # TODO: find different nu that will cause effects. Original: 0.01
@@ -78,5 +78,5 @@ if plot_flat:
 
 #TODO: write a simple_animate for surfaces and/or 2D-colourmap
 if animate:
-    animate_2d_by_t.animate_it(u_soln, v_soln);
+    animate_2d_by_t.animate_it(u_soln, v_soln)#, style="flat")
     pyplot.show()

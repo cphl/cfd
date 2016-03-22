@@ -95,5 +95,3 @@ def plot2D_flat(u_solution, v_solution, t):
     # TODO: using pcolormesh for larger arrays, was pcolor originally
     surf1 = pyplot.pcolormesh(X, Y, u_solution[:, :, t], cmap=cm.jet)
     surf2 = pyplot.pcolormesh(X, Y, v_solution[:, :, t], cmap=cm.gist_heat)
-
-# TODO: animate it
