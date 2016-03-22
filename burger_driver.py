@@ -9,11 +9,17 @@ from __future__ import division
 import numpy
 from matplotlib import pyplot
 import burgers_2d_function as bgr
+import animate_2d_by_t
+
+# Set flags for which plots to make:
+plot_surface = False
+plot_flat = False
+animate = True
 
 
 # Call the function with these parameters
-nx = 61
-ny = 61
+nx = 41
+ny = 41
 nt = 800  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
 nu = 0.01  # TODO: find different nu that will cause effects. Original: 0.01
@@ -59,13 +65,18 @@ u_soln, v_soln = bgr.solve_burgers(u0c, v0c, area, nx, ny, nt, sigma, nu)
 #v_final = v_soln[:,:,-1]
 
 # plot surface: helpful if a feature is too skinny in one dimension
-#bgr.plot2D(u_soln, v_soln, -1)  # -1 gives the final time
-#pyplot.show(block=False)
+if plot_surface:
+    bgr.plot2D(u_soln, v_soln, -1)  # -1 gives the final time
+    pyplot.show(block=False)
 
 # plot flat with colourmap
-bgr.plot2D_flat(u_soln, v_soln, 0)
-pyplot.show(block=False)
-bgr.plot2D_flat(u_soln, v_soln, 155)
-pyplot.show()
+if plot_flat:
+    bgr.plot2D_flat(u_soln, v_soln, 0)
+    pyplot.show(block=False)
+    bgr.plot2D_flat(u_soln, v_soln, 155)
+    pyplot.show()
 
 #TODO: write a simple_animate for surfaces and/or 2D-colourmap
+if animate:
+    animate_2d_by_t.animate_it(u_soln, v_soln);
+    pyplot.show()

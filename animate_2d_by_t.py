@@ -42,19 +42,22 @@ def animate_it(u_soln, v_soln, stride=1):
     ys = np.linspace(0, 2, ny)  # min, max, ny
 
     X, Y = np.meshgrid(xs, ys)
-    wframe = ax.plot_wireframe([], [], [], lw=1)
+#    wframe = ax.plot_wireframe([], [], [], lw=1)
+    surf = ax.plot_surface([], [], [])
     ax.set_zlim(0, 5)  # TODO might want to let this go unconstrained
 
     def update(t, ax, fig):  # we had called analogous function "animate" in 1d
         ax.cla()  # <-- maybe this is what could go in an init function?
-        wframe = ax.plot_wireframe(X, Y, v_soln[:, :, t], rstride=2, cstride=2)
+#       wframe = ax.plot_wireframe(X, Y, v_soln[:, :, t], rstride=2, cstride=2)
+        surf = ax.plot_surface(X, Y, v_soln[:, :, t],
+                               rstride=1, cstride=1, cmap=cm.gist_heat)
         ax.set_zlim(0, 5)  # TODO free these hardcoded numbers
-        return wframe,
+#        return wframe,
+        return surf
 
     ani = animation.FuncAnimation(fig, update,
                                   frames=nt,  # was frames=xrange(100)
-                                  fargs=(ax, fig), interval=100,
-                                  blit=True)
+                                  fargs=(ax, fig), interval=30)
     plt.show(block=False)
 
 # TODO: add option to sample from provided array, important for high timesteps
