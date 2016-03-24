@@ -22,7 +22,7 @@ nx = 61
 ny = 61
 nt = 800  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
-nu = 0.01  # TODO: find different nu that will cause effects. Original: 0.01
+nu = 0.0004  # TODO: find different nu that will cause effects. Original: 0.01, 0.001 to 0.0004 looks smooth with rising edges, 0.0003 causes problems
 area = [3, 2]  # original was 2 x 2
 
 # Hat function (for initial condition), original given:
@@ -32,11 +32,11 @@ dt = sigma*dx*dy/nu
 u0 = numpy.ones((ny, nx))
 v0 = numpy.ones((ny, nx))
 
-#u0a = u0.copy()
-#v0a = v0.copy()
-#u0a[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
-#v0a[.5/dy:1/dy+1, .5/dx:1/dx+1] = 2  # hat func IC
-#
+u0a = u0.copy()
+v0a = v0.copy()
+u0a[.5/dy:1/dy+1, .5/dx:1/dx+1] = 6  # hat func IC
+v0a[.5/dy:1/dy+1, .5/dx:1/dx+1] = 6  # hat func IC
+
 
 
 ##TODO: make different initial conditions... This one just playing around
@@ -49,16 +49,20 @@ v0 = numpy.ones((ny, nx))
 #v0b[0.2/dy: 0.3/dy, 0.2/dx: 0.3/dx] = 2  # add junk, see what happens
 
 
-# donut
-u0c = u0.copy()
-v0c = v0.copy()
+## donut: no reason, just to see if it works
+#u0c = u0.copy()
+#v0c = v0.copy()
+#
+#u0c[0.5/dy+5: 1/dy+6, 0.5/dx+5: 1/dx+6] = 2  # hat func IC
+#v0c[0.5/dy: 1/dy, 0.5/dx: 1/dx] = 3  # hat func IC
+#v0c[0.6/dy: 0.9/dy, 0.6/dx: 0.9/dx] = 1  # hat hole IC
 
-u0c[0.5/dy+5: 1/dy+6, 0.5/dx+5: 1/dx+6] = 2  # hat func IC
-v0c[0.5/dy: 1/dy, 0.5/dx: 1/dx] = 3  # hat func IC
-v0c[0.6/dy: 0.9/dy, 0.6/dx: 0.9/dx] = 1  # hat hole IC
+## exponential IC
+#u_exp_0 = u0.copy()
+#v_exp_0 = v0 * exp(-8*numpy.linspace(nx))  # TODO this properly
+#
 
-
-u_soln, v_soln = bgr.solve_burgers(u0c, v0c, area, nx, ny, nt, sigma, nu)
+u_soln, v_soln = bgr.solve_burgers(u0a, v0a, area, nx, ny, nt, sigma, nu)
 
 # to inspect final solution:
 #u_final = u_soln[:,:,-1]
@@ -71,8 +75,8 @@ if plot_surface:
 
 # plot flat with colourmap
 if plot_flat:
-    bgr.plot2D_flat(u_soln, v_soln, 0)
-    pyplot.show(block=False)
+#    bgr.plot2D_flat(u_soln, v_soln, 0)
+#    pyplot.show(block=False)
     bgr.plot2D_flat(u_soln, v_soln, 155)
     pyplot.show()
 

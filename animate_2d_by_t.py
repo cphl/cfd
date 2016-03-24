@@ -63,7 +63,7 @@ def animate_it(u_soln, v_soln, style="surface", stride=1):
 
         if style == "surface":
             surf = ax.plot_surface(X, Y, v_soln[:, :, t],
-                                   rstride=4, cstride=4, cmap=cm.gist_heat)
+                                   rstride=6, cstride=6, cmap=cm.gist_heat)
             return surf,
 
         if style == "flat":
