@@ -1,7 +1,7 @@
 # cfd
 Phys 447
 ##### 2d Burgers
- * run burger_driver.py to see animated surface plot
+ * run burger_driver.py to see animated surface plot (works from Canopy or Spyder, but not terminal, will check)
  * low res because running slow right now, will investigate
  * in progress: flat colourmap
  * stills of flat colourmap plot work. Toggle flags for at top of file to have it show
