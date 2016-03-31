@@ -6,8 +6,8 @@
 * following discussions will be 2d
 
 ##### Convection
-###### Linear
-###### Nonlinear
+* Linear
+* Nonlinear
 
 ##### Diffusion
 
@@ -17,18 +17,19 @@
 ##### (Laplace, Poisson, Navier-Stokes)
 
 #### (???)
-###### N-S channel flow
-###### N-S cavity flow
+* N-S channel flow
+* N-S cavity flow
 
 
 #### Numerical methods
-##### Rationale for differencing methods used
-##### Stability (computational)
+* Rationale for differencing methods used
+* Stability (computational)
 
 
 #### Code strategy
-##### Optimizations for speed
-* general (vectorization) + specific to Python packages (jit in numba)
-* Link code on github
-##### Programmatically searching for features
-e.g. varying parameters to find shocks in Burgers (I should probably do that first)
+* Optimizations for speed
+  * general (vectorization) + specific to Python packages (jit in numba)
+  * Link code on github
+
+* Programmatically searching for features
+  * e.g. varying parameters to find shocks in Burgers (I should probably do that first)
