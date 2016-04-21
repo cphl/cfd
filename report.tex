@@ -159,8 +159,9 @@ duplicate the original spatial variation in the new dimension.
 
 \subsubsection{Nonlinear convection (2d)}
 Nonlinear in an extra dimension requires a different treatment.
+The constant velocity is now a vector-valued velocity with two dimensions
+$(u, v)$, with partial derivatives, we now have coupled equations.
 
-...[more steps here]
 \begin{align}
 \frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x}  + v\frac{\partial u}{\partial x} 
 &= 0		\nonumber \\ \nonumber\\
@@ -178,10 +179,8 @@ again, a duplication in the y-component works.
 
 \subsubsection{Burgers (2d)}
 As in the case with nonlinear convection, coupled PDEs are required to
-describe the system.
-
-...
-[ more here]
+describe the system. The two independent variables $u$, and $v$ are coupled
+in this system to form a vector field.
 
 \begin{align}
 \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y}
@@ -191,7 +190,102 @@ describe the system.
 &= \nu \left(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)	\label{2d_Burgers}
 \end{align}
 
+\subsubsection{Navier-Stokes}
+
+For an incompressible flow model, velocity and pressure need to be included
+and each affects the other.
+
+We need to involve the continuity equation for fluid with constant density
+$\rho$ (mass conservation) and the vector equation for conservation of
+momentum, which depends upon $\rho$. For compressible flows, we are able to
+relate pressure and density, but since we are dealing with the incompressible
+version, we have no such equation of state.
+
+\begin{align}
+&\text{continuity equation (conservation of mass)}
+	&\nabla \cdot \vec{n} &= 0	\label{continuity}
+	\\ \nonumber \\
+&\text{conservation of momentum}
+	&\frac{\partial \vec{u}}{\partial t} + (\vec{u} \cdot \nabla) \vec{u}
+	&= -\frac{1}{\rho} \nabla p + \nu \nabla ^2 \vec{u}
+\label{consmom}
+\end{align}
+
+Componentwise, the equations become:
+\begin{align}
+&\text{conservation of mass}
+	&\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} &= 0
+	\label{component_consmass}
+	\\ \nonumber \\
+&\text{conservation of momentum}
+	\label{component-1_consmom}
+	&\frac{\partial u}{\partial x} + u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y}
+	&= -\frac{1}{\rho} \frac{\partial p}{\partial x} 
+	+ \nu \left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right)
+	\\ \nonumber \\
+	&
+	&\frac{\partial v}{\partial x} + u\frac{\partial v}{\partial x} + v\frac{\partial v}{\partial y}
+	&= -\frac{1}{\rho} \frac{\partial p}{\partial y} 
+	+ \nu \left(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)	
+	\label{component-2_consmom}
+\end{align}
+
+The equations retain the same form: in conservation of momentum, the first term is the
+steady partial, the final term is the viscous term multiplying the Laplacian of that
+component velocity.
+
+By taking derivatives of expressions\ref{component-1_consmom} and \ref{component-2_consmom},
+we obtain the divergence of the momentum. That is, adding $\frac{\partial }{\partial x}$
+(\ref{component-1_consmom}) and $\frac{\partial }{\partial y}$ (\ref{component-2_consmom}),
+we have:
+
+\begin{align}
+\frac{\partial}{\partial t} \left( \frac{\partial u}{\partial x} \right) &
+	\nonumber \\ \nonumber \\
++ \frac{\partial u}{\partial x} \frac{\partial u}{\partial x}
+ + u \frac{\partial^2 u}{\partial x^2}	 &
+ 	&\text{	(product rule)}
+	\nonumber \\ \nonumber \\
++ \frac{\partial v}{\partial x} \frac{\partial u}{\partial y}
+ + v \frac{\partial^2 u}{\partial x \partial y}
+ 	\nonumber \\ \nonumber \\
+& = -\frac{1}{\rho} \frac{\partial^2 p}{\partial x^2}
+	\nonumber \\ \nonumber \\
+& + \nu \frac{\partial }{\partial x}\left( \nabla^2 u \right)
+	&\text{(expand this Laplacian)}
+	\nonumber \\
+	\nonumber
+	\\
+\text{add to similar with partial with respect to y on (\ref{component-2_consmom}):}
+	\nonumber \\ \nonumber
+\\
+\textbf{[...fix this...]}
+\\	
+\frac{\partial}{\partial t} \left( \frac{\partial v}{\partial y} \right)
+ + \frac{\partial u}{\partial y} + \frac{\partial^2 v}{\partial x \partial y}
+ + \frac{\partial v}{\partial y} \frac{\partial v}{\partial y}
+ + v \frac{\partial^2 y}{\partial y^2}
+& = -\frac{1}{\rho} \frac{\partial^2 p}{\partial y^2}
+ + \nu \frac{\partial }{\partial y}\left( \nabla^2 v \right)
+	\nonumber \\ \nonumber
+	\\
+\text{the left-hand-side becomes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \nonumber \\
+\frac{\partial }{\partial t}
+	\left( \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y}\right)
+	+ \frac{\partial u}{\partial x} \frac{\partial u}{\partial x}
+	+
+\end{align}
+
+\begin{align}
+\text{...to be filled...}
+\end{align}
+
+
+
+
 \subsubsection{Laplace}
+[... maybe these should only be separate sections in the numerical coverage ...]
+
 The Laplace equation shows a steady state of a system given boundary
 conditions. There is no time parameter.
 \begin{align}
@@ -226,6 +320,14 @@ Added source term
 Describe general strategy used for all
 
 Do whole process for each one? Or do one and show only results for rest?
+
+\textbf{Considering} want to show forward, backward and central difference:
+
+Do a most simple one in 1-d
+
+and then 2d Burgers
+
+then 2d pressure ones
 
 \begin{enumerate}[(A)]
 \item Discretize
