@@ -31,7 +31,7 @@
 \newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{-: #4}{#1}}
 \newcommand{\R}{\mathbb{R}}     % use for capital R real number set symbol
 \newcommand{\Z}{\mathbb{Z}}     % use for capital Z integer set symbol
-
+\newcommand{\D}[2][]{\frac{\partial#1}{\partial#2}}
 % tabbing environment for pseudo-code 
 \newenvironment{code} {
 \begin{tt}
@@ -67,11 +67,8 @@
 %\renewcommand{\baselinestretch}{1.25}
 
 \begin{document}
-
 \lecture{Computational fluid dynamics}{Spring 2016}{}{}
-
 % =========================================================================== %
-
 \section{Introduction}
 
 \vspace{1cm}
@@ -237,39 +234,32 @@ component velocity.
 By taking derivatives of expressions\ref{component-1_consmom} and \ref{component-2_consmom},
 we obtain the divergence of the momentum. That is, adding $\frac{\partial }{\partial x}$
 (\ref{component-1_consmom}) and $\frac{\partial }{\partial y}$ (\ref{component-2_consmom}),
-we have:
+we have, term by term:
 
 \begin{align}
 \frac{\partial}{\partial t} \left( \frac{\partial u}{\partial x} \right) &
 	\nonumber \\ \nonumber \\
 + \frac{\partial u}{\partial x} \frac{\partial u}{\partial x}
  + u \frac{\partial^2 u}{\partial x^2}	 &
- 	&\text{	(product rule)}
 	\nonumber \\ \nonumber \\
 + \frac{\partial v}{\partial x} \frac{\partial u}{\partial y}
  + v \frac{\partial^2 u}{\partial x \partial y}
  	\nonumber \\ \nonumber \\
 & = -\frac{1}{\rho} \frac{\partial^2 p}{\partial x^2}
 	\nonumber \\ \nonumber \\
-& + \nu \frac{\partial }{\partial x}\left( \nabla^2 u \right)
-	&\text{(expand this Laplacian)}
+& + \nu \left( \D[^3u]{x^3} + \D{x} \D[^2u]{y^2} \right)
 	\nonumber \\
 	\nonumber
 	\\
-\text{add to similar with partial with respect to y on (\ref{component-2_consmom}):}
+\text{add to similar treatment of partial with respect to y on (\ref{component-2_consmom}):}
 	\nonumber \\ \nonumber
 \\
-\textbf{[...fix this...]}
-\\	
-\frac{\partial}{\partial t} \left( \frac{\partial v}{\partial y} \right)
- + \frac{\partial u}{\partial y} + \frac{\partial^2 v}{\partial x \partial y}
- + \frac{\partial v}{\partial y} \frac{\partial v}{\partial y}
- + v \frac{\partial^2 y}{\partial y^2}
+\D{t} \D[v]{y} + \D[u]{y}\D[u]{x} + u \D{y}\D[u]{x} + \D[v]{y}\D[v]{y} + v \D[^2 v]{y^2}
 & = -\frac{1}{\rho} \frac{\partial^2 p}{\partial y^2}
- + \nu \frac{\partial }{\partial y}\left( \nabla^2 v \right)
+ + \nu \left( \D{y} \D[^2v]{x^2} + \D[^3v]{y^3} \right)
 	\nonumber \\ \nonumber
 	\\
-\text{the left-hand-side becomes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \nonumber \\
+\text{the left-hand-side becomes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \nonumber \\
 \frac{\partial }{\partial t}
 	\left( \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y}\right)
 	+ \frac{\partial u}{\partial x} \frac{\partial u}{\partial x}
