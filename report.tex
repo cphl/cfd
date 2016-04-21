@@ -260,14 +260,14 @@ we have, term by term:
 	\nonumber \\ \nonumber
 	\\
 \text{the left-hand-side becomes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \nonumber \\
-\frac{\partial }{\partial t}
-	\left( \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y}\right)
-	+ \frac{\partial u}{\partial x} \frac{\partial u}{\partial x}
-	+
+\D{t} \left( \D[u]{x} + \D[v]{y} \right)
+	+ \frac{\partial u}{\partial x} \frac{\partial u}{\partial x} + \D[u]{y}\D[u]{x}
+	+ u \left( \D[^2u]{x^2} + \D{y}\D[u]{x} \right)
+	&+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
+	+ v \left( \D[^2u]{x^2} + \D[^2v]{y^2} \right)
 \end{align}
 
 \begin{align}
-\text{...to be filled...}
 \end{align}
 
 

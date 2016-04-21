@@ -84,3 +84,5 @@ if plot_flat:
 if animate:
     animate_2d_by_t.animate_it(u_soln, v_soln)#, style="flat")
     pyplot.show()
+
+# TODO: figure out why this doesn't run from terminal i/python burger_driver.py
