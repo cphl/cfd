@@ -1,0 +1,285 @@
+% Template adapted from that for Scribe Notes - CS500 (Spring 2016)
+% (template is a modified version of one prepared by Erik Demaine at MIT)
+%
+\documentclass[11pt]{article}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+%\usepackage{psfig}
+\usepackage{enumerate}  % use this for lettered points
+\usepackage{hyperref}   % to add links
+
+\newcommand{\handout}[5]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { \textbf{PHYS 447} \hfill #2 }
+      \vspace{4mm}
+      \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+      \vspace{2mm}
+      \hbox to 5.78in { \emph{#3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{-: #4}{#1}}
+\newcommand{\R}{\mathbb{R}}     % use for capital R real number set symbol
+\newcommand{\Z}{\mathbb{Z}}     % use for capital Z integer set symbol
+
+% tabbing environment for pseudo-code 
+\newenvironment{code} {
+\begin{tt}
+\begin{tabbing}
+\ \ \ \ \= \ \ \ \ \= \ \ \ \ \= \ \ \ \ \= \ \ \ \ \= \ \ \ \ \=  \ \ \ \ \= \ \ \ \ \= \\ \kill
+}{
+\end{tabbing}
+\end{tt}
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{assumption}[theorem]{Assumption}
+
+% 1-inch margins, from fullpage.sty by H.Partl, Version 2, Dec. 15, 1988.
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+%\renewcommand{\baselinestretch}{1.25}
+
+\begin{document}
+
+\lecture{Computational fluid dynamics}{Spring 2016}{}{}
+
+% =========================================================================== %
+
+\section{Introduction}
+
+\vspace{1cm}
+This intent of this project was to learn about the physics of fluids and
+observe the behaviour in computer simulations.
+The process was carried out by starting with simplifying assumptions on the
+model, choosing a discretization method, then writing code in Python. At each
+following step, an assumption would be generalized so that the change could be
+observed. The equations were examined in 1-dimension first so an example will
+be shown before the transition to 2-dimensions.
+
+Fluid flow equations addressed:
+\begin{itemize}\itemsep0em 
+\item linear convection
+\item nonlinear convection
+\item diffusion
+\item Burgers equation
+\item Laplace, Poisson, Navier-Stokes
+\end{itemize}
+
+... Applications...
+
+... Navier-stokes: Channel / cavity flow ...
+
+...
+
+\section{Physics}
+
+\subsection{Introduction to models in 1-dimensional form}
+Beginning with 1-dimensional models, we can describe the differences
+between the behaviours of the systems dictated by these equations. They
+have their analogues in 2-dimensions.
+
+Starting off, the simplest model looked at was the 1-dimensional equation
+describing convective flow without diffusion. It describes the propagation
+of a wave with constant speed $c$. There is no deformation of shape of the
+initial condition's wave as it propagates. \ref{1d_linconv}
+
+In the nonlinear case, the constant speed is replaced by $u$ which is the
+solution $u(x,t)=u_0(x-ct)$ given an initial condition $u(x,0)=u_0(x)$
+The speed of propagation is different depending upon the location.
+Because of this, shocks may be observed (see corresponding treatment in the
+numerical considerations section \ref{}). It is also known as the inviscid
+Burgers equation.
+\ref{1d_nonlinconv}
+
+Then diffusion is considered without any convection.
+If $u$ is temperature, then this is the heat equation.
+It is governed by a second-order partial derivative. \ref{1d_diffusion}
+
+For the last of the equations with time evolution, nonlinear convection
+and diffusion are treated simultaneously. Since viscosity is now accounted
+for with the diffusion term, this is the general Burgers equation. It has
+applications outside of fluid dynamics, for example in acoustics.
+\ref{1d_Burgers}
+
+\begin{align}
+& \text{linear convection} &
+\frac{\partial u}{\partial t} + c \frac{\partial u}{\partial x} &= 0		\label{1d_linconv}
+\\ \nonumber \\ & \text{(inviscid Burgers) nonlinear convection} &
+\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} &= 0		\label{1d_nonlinconv}
+\\ \nonumber \\ & \text{linear diffusion} &
+\frac{\partial u}{\partial t} &= \nu \frac{\partial^2 u}{\partial x^2}		\label{1d_diffusion}
+\\ \nonumber \\ & \text{Burgers' equation} &
+\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} &= \nu \frac{\partial^2 u}{\partial x^2}	\label{1d_Burgers}
+\end{align}
+
+% this is useful for spacing equations when they're too far apart... or something
+\hspace{1cm}
+% equation stuff
+%\begin{align*}
+%\end{align*}
+
+\subsection{Extension to 2-dimensional models}
+The expressions introduced in their 1-dimensional form are now shown
+extended to two dimensions.
+\subsubsection{Linear convection (2d)}
+The conversion from one- to two-dimensions is straightforward for linear
+convection. As two spatial components are changing, it is sufficient to
+duplicate the original spatial variation in the new dimension.
+\begin{align}
+\frac{\partial u}{\partial t} + c\left(\frac{\partial u}{\partial x}  + \frac{\partial u}{\partial x} \right)
+&= 0		\label{2d_linconv}
+\end{align}
+
+\subsubsection{Nonlinear convection (2d)}
+Nonlinear in an extra dimension requires a different treatment.
+
+...[more steps here]
+\begin{align}
+\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x}  + v\frac{\partial u}{\partial x} 
+&= 0		\nonumber \\ \nonumber\\
+\frac{\partial v}{\partial t} + u\frac{\partial v}{\partial x}  + v\frac{\partial v}{\partial x} 
+&= 0
+	\label{2d_nonlinconv}
+\end{align}
+
+\subsubsection{Diffusion (2d)}
+Diffusion affects flow equally in both components in two dimensions, so
+again, a duplication in the y-component works.
+\begin{align}
+\frac{\partial u}{\partial t} &= \nu \left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right)		\label{2d_diffusion}
+\end{align}
+
+\subsubsection{Burgers (2d)}
+As in the case with nonlinear convection, coupled PDEs are required to
+describe the system.
+
+...
+[ more here]
+
+\begin{align}
+\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y}
+&= \nu \left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right)
+\nonumber \\ \nonumber \\
+\frac{\partial v}{\partial t} + u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y}
+&= \nu \left(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)	\label{2d_Burgers}
+\end{align}
+
+\subsubsection{Laplace}
+The Laplace equation shows a steady state of a system given boundary
+conditions. There is no time parameter.
+\begin{align}
+\frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= 0
+\label{laplace}
+\end{align}
+
+\subsubsection{Poisson}
+The Poission equation is relevant as the pressure term that will be used in
+the Navier-Stokes equation. Compare to the Laplace equation.\ref{laplace}...
+The source term $b$ causes the equation to relax initial sources in the field.
+... [more on relaxation]...
+
+\begin{align}
+\frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= b
+\end{align}
+
+\subsubsection{Channel flow}
+Pressure-driven
+
+...
+
+Added source term
+
+...
+
+
+\section{Numerical considerations}
+
+\subsection{Preparing discretized computation}
+
+Describe general strategy used for all
+
+Do whole process for each one? Or do one and show only results for rest?
+
+\begin{enumerate}[(A)]
+\item Discretize
+
+[..]
+
+\item Transpose
+
+[..]
+
+\subsection{CFL condition}
+choosing constant for CFL, motivation
+
+\end{enumerate}
+
+\section{Coding strategy}
+
+storage of solutions at each time step
+
+sampling of solutions
+
+single plots vs animations
+
+\subsection{Optimizations}
+
+modularizing with parametrized functions
+
+vectorization to remove nested loop
+
+
+
+\subsection{Results}
+
+Show example figures:
+
+linear convection: note false diffusion caused by roundoff in computations
+
+nonlinear
+
+diffusion alone
+
+Burgers with and without shocks
+
+show artefacts from choosing bad timesteps
+
+channel flow
+
+%	\begin{figure}[qfc]
+%	\centering
+%	\caption{Quantum Factoring Circuit}
+%	\includegraphics[scale=0.8]{QuantumFactoringCircuit.eps}
+%	\label{fig:qfg}
+%	\end{figure}
+
+\section*{References}
+
+\end{document}
