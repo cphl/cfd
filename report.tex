@@ -254,24 +254,66 @@ we have, term by term:
 \text{add to similar treatment of partial with respect to y on (\ref{component-2_consmom}):}
 	\nonumber \\ \nonumber
 \\
-\D{t} \D[v]{y} + \D[u]{y}\D[u]{x} + u \D{y}\D[u]{x} + \D[v]{y}\D[v]{y} + v \D[^2 v]{y^2}
+\D{t} \D[v]{y} + \D[u]{y}\D[u]{x} + u \D{y}\D[v]{x} + \D[v]{y}\D[v]{y} + v \D[^2 v]{y^2}
 & = -\frac{1}{\rho} \frac{\partial^2 p}{\partial y^2}
  + \nu \left( \D{y} \D[^2v]{x^2} + \D[^3v]{y^3} \right)
 	\nonumber \\ \nonumber
-	\\
-\text{the left-hand-side becomes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \nonumber \\
-\D{t} \left( \D[u]{x} + \D[v]{y} \right)
-	+ \frac{\partial u}{\partial x} \frac{\partial u}{\partial x} + \D[u]{y}\D[u]{x}
-	+ u \left( \D[^2u]{x^2} + \D{y}\D[u]{x} \right)
-	&+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
-	+ v \left( \D[^2u]{x^2} + \D[^2v]{y^2} \right)
 \end{align}
-
+the left-hand side becomes
 \begin{align}
+&\D{t} \left( \D[u]{x} + \D[v]{y} \right)
+	+ \D[u]{x}\D[u]{x} + \D[u]{y}\D[u]{x}
+	+ u \left( \D[^2u]{x^2} + \D{y}\D[v]{x} \right)
+	+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
+	+ v \left( \D[^2u]{x^2} + \D[^2v]{y^2} \right)
+	\nonumber \\ \nonumber
+= &\D{t} \left( \D[u]{x} + \D[v]{y} \right)
+	+ \D[u]{x}\D[u]{x} + \D[u]{y}\D[u]{x}
+	+ u \D{x} \left( \D[u]{x} + \D[v]{y} \right)
+	+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
+	+ v \D{y} \left( \D[u]{x} + \D[v]{y} \right)
 \end{align}
-
-
-
+looking at the common terms in parentheses (divergence of velocity),
+we know these = 0 from the conservation of mass equation (\ref{component_consmass}), so we are left with the remaining terms
+\begin{align}
+= \D[u]{x}\D[u]{x} + \D[u]{y}\D[u]{x}
+	+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
+= \left(\D[u]{x}\right)^2 + 2\D[v]{x}\D[u]{y} + \left(\D[v]{y}\right)^2
+\label{lhs}
+\end{align}
+the right-hand side becomes
+\begin{align}
+-\frac{1}{\rho} \left( \D[^2p]{x^2} + \D[^2p]{y^2} \right)
+&+\nu \left( \D[^3u]{x^3} + \D{x} \D[^2u]{y^2} + \D{y} \D[^2v]{x^2} + \D[^3v]{y^3} \right)
+	\nonumber \\ \nonumber
+= -\frac{1}{\rho} \left( \D[^2p]{x^2} + \D[^2p]{y^2} \right)
+&+ \nu \left[
+  \D[^2]{x^2} \left( \D[u]{x} + \D[v]{y} \right)
++ \D[^2]{y^2} \left( \D[u]{x} + \D[v]{y} \right)
+  \right]
+  \label{rhs}
+\end{align}
+%  \nonumber \\ \nonumber
+ \text{again, apply equation (\ref{component_consmass}) to yield}
+  \\
+\begin{align}
+= -\frac{1}{\rho} \left( \D[^2p]{x^2} + \D[^2p]{y^2} \right)
+\end{align}
+Putting LHS (\ref{lhs}) and RHS (\ref{rhs}) together, we have
+\begin{align}
+&\left(\D[u]{x}\right)^2 + 2\D[v]{x}\D[u]{y} + \left(\D[v]{y}\right)^2
+=
+-\frac{1}{\rho} \left( \D[^2p]{x^2} + \D[^2p]{y^2} \right)
+\nonumber \\
+\text{(re-arrange terms)}~~ \nonumber \\ \nonumber
+\Rightarrow~~~&\D[^2p]{x^2} + \D[^2p]{y^2} =
+- \rho \left[ \left(\D[u]{x}\right)^2 + 2\D[v]{x}\D[u]{y} + \left(\D[v]{y}\right)^2 \right]
+\nonumber \\
+\text{which has form}& \nonumber \\ \nonumber
+\Rightarrow~~~&\nabla^2 p = function
+\end{align}
+This is Poisson's equation for pressure in two dimensions. Continuity (mass conservation) satisfied. This relation between pressure and velocity can be used
+to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.)[\ref{vid11} 17:45]
 
 \subsubsection{Laplace}
 [... maybe these should only be separate sections in the numerical coverage ...]
