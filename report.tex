@@ -313,13 +313,33 @@ Putting LHS (\ref{lhs}) and RHS (\ref{rhs}) together, we have
 \Rightarrow~~~&\nabla^2 p = function
 \end{align}
 This is Poisson's equation for pressure in two dimensions. Continuity (mass conservation) satisfied. This relation between pressure and velocity can be used
-to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.)[\ref{vid11} 17:45]
+to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.)[\ref{vid11} 17:45] $f$ is such that pressure satisfies the Poisson equation.
+
+[Discretization]
+
+
+
+\section{Numerical considerations}
+At this point, some of the expressions that we have in the continuous case do not work so well
+when discretized for our numerical computations. We would like to have a divergence-free velocity
+but due to numerical effects, it may not always equal zero at each iteration. The strategy used
+here will be to calculate what the conservation of momentum equation should be at the next step
+but then before considering the step complete, do an intermediate calculation for the divergence
+being zero, thereby preserving conservation of mass (continuity), and only then complete that
+iteration.
+
+
+To aid in developing a numerical setup for complete Navier-Stokes, we start with some simpler
+cases to build up smaller pieces of code. We begin with Laplace's equation and progress to
+Poisson first.
 
 \subsubsection{Laplace}
+Start with Laplace for the purpose of computational stepping.
+
 [... maybe these should only be separate sections in the numerical coverage ...]
 
 The Laplace equation shows a steady state of a system given boundary
-conditions. There is no time parameter.
+conditions. There is no time parameter. It is the Poisson equation without a source term (RHS = 0).
 \begin{align}
 \frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= 0
 \label{laplace}
@@ -344,8 +364,6 @@ Added source term
 
 ...
 
-
-\section{Numerical considerations}
 
 \subsection{Preparing discretized computation}
 
