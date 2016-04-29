@@ -187,27 +187,29 @@ in this system to form a vector field.
 &= \nu \left(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)	\label{2d_Burgers}
 \end{align}
 
-\subsubsection{Navier-Stokes}
+\subsubsection{Navier-Stokes for incompressible fluid}
 
-For an incompressible flow model, velocity and pressure need to be included
-and each affects the other.
+Velocity and pressure need to be included and each affects the other.
 
 We need to involve the continuity equation for fluid with constant density
 $\rho$ (mass conservation) and the vector equation for conservation of
-momentum, which depends upon $\rho$. For compressible flows, we are able to
-relate pressure and density, but since we are dealing with the incompressible
-version, we have no such equation of state.
+momentum, which depends upon $\rho$. Equation (\ref{continuity}) acts as
+a constraint to the equation of motion (\ref{consmom}).
+
+For compressible flows, we are able to relate pressure and density, but
+since we are dealing with the incompressible version, we have no such
+equation of state. A different way of coupling the equations is required.
 
 \begin{align}
 &\text{continuity equation (conservation of mass)}
-	&\nabla \cdot \vec{n} &= 0	\label{continuity}
+	&\nabla \cdot \vec{u} &= 0	\label{continuity}
 	\\ \nonumber \\
 &\text{conservation of momentum}
 	&\frac{\partial \vec{u}}{\partial t} + (\vec{u} \cdot \nabla) \vec{u}
 	&= -\frac{1}{\rho} \nabla p + \nu \nabla ^2 \vec{u}
 \label{consmom}
 \end{align}
-
+ 
 Componentwise, the equations become:
 \begin{align}
 &\text{conservation of mass}
@@ -216,20 +218,21 @@ Componentwise, the equations become:
 	\\ \nonumber \\
 &\text{conservation of momentum}
 	\label{component-1_consmom}
-	&\frac{\partial u}{\partial x} + u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y}
+	&\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y}
 	&= -\frac{1}{\rho} \frac{\partial p}{\partial x} 
 	+ \nu \left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right)
 	\\ \nonumber \\
 	&
-	&\frac{\partial v}{\partial x} + u\frac{\partial v}{\partial x} + v\frac{\partial v}{\partial y}
+	&\frac{\partial v}{\partial t} + u\frac{\partial v}{\partial x} + v\frac{\partial v}{\partial y}
 	&= -\frac{1}{\rho} \frac{\partial p}{\partial y} 
 	+ \nu \left(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)	
 	\label{component-2_consmom}
 \end{align}
 
 The equations retain the same form: in conservation of momentum, the first term is the
-steady partial, the final term is the viscous term multiplying the Laplacian of that
-component velocity.
+steady partial, the second and third are associated with convection,
+the final term is the viscous term multiplying the Laplacian of that
+component velocity and is associated with diffusion.
 
 By taking derivatives of expressions\ref{component-1_consmom} and \ref{component-2_consmom},
 we obtain the divergence of the momentum. That is, adding $\frac{\partial }{\partial x}$
@@ -248,12 +251,15 @@ we have, term by term:
 & = -\frac{1}{\rho} \frac{\partial^2 p}{\partial x^2}
 	\nonumber \\ \nonumber \\
 & + \nu \left( \D[^3u]{x^3} + \D{x} \D[^2u]{y^2} \right)
-	\nonumber \\
-	\nonumber
-	\\
-\text{add to similar treatment of partial with respect to y on (\ref{component-2_consmom}):}
-	\nonumber \\ \nonumber
-\\
+	\nonumber % \\
+\end{align}
+%	\nonumber
+%	\\
+%\text{add to similar treatment of partial with respect to y on (\ref{component-2_consmom}):}
+%	\nonumber \\ \nonumber
+%\\
+add to similar treatment of partial with respect to $y$ on (\ref{component-2_consmom}):
+\begin{align}
 \D{t} \D[v]{y} + \D[u]{y}\D[u]{x} + u \D{y}\D[v]{x} + \D[v]{y}\D[v]{y} + v \D[^2 v]{y^2}
 & = -\frac{1}{\rho} \frac{\partial^2 p}{\partial y^2}
  + \nu \left( \D{y} \D[^2v]{x^2} + \D[^3v]{y^3} \right)
@@ -274,7 +280,7 @@ the left-hand side becomes
 	+ v \D{y} \left( \D[u]{x} + \D[v]{y} \right)
 \end{align}
 looking at the common terms in parentheses (divergence of velocity),
-we know these = 0 from the conservation of mass equation (\ref{component_consmass}), so we are left with the remaining terms
+we know these = 0 from the conservation of mass equation, which we must obey (\ref{component_consmass}), so we are left with the remaining terms
 \begin{align}
 = \D[u]{x}\D[u]{x} + \D[u]{y}\D[u]{x}
 	+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
@@ -312,15 +318,15 @@ Putting LHS (\ref{lhs}) and RHS (\ref{rhs}) together, we have
 \text{which has form}& \nonumber \\ \nonumber
 \Rightarrow~~~&\nabla^2 p = function
 \end{align}
-This is Poisson's equation for pressure in two dimensions. Continuity (mass conservation) satisfied. This relation between pressure and velocity can be used
-to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.)[\ref{vid11} 17:45] $f$ is such that pressure satisfies the Poisson equation.
-
-
+This is Poisson's equation for pressure in two dimensions. Equations (\ref{continuity}) and {\ref{consmom}) are satisfied simultaneously.
+This relation between pressure and velocity can be used
+to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.) $f$ is the function such that pressure satisfies the Poisson
+equation.
 
 
 \section{Numerical considerations}
 
-[--- Discretization for simpler model(s) ---]
+[--- Discretization for simpler model(s) --- or not...]
 
 
 At this point, some of the expressions that we have in the continuous case do not work so well
@@ -333,11 +339,33 @@ but then before considering the step complete, do an intermediate calculation fo
 being zero, thereby preserving continuity (conservation of mass), and only then complete that
 iteration.
 
+First, we examine how the problem of non-zero divergence of velocity may arise when we
+discretize the equation of motion (\ref{consmom}) keeping it in vector form.
+
+\begin{align}
+& \frac{\vec{u}^{n+1} - \vec{u^n}}{\Delta t} + \vec{u}^n \cdot \nabla \vec{u}^n
+ = -\frac{1}{\rho} \nabla p + \nu \nabla^2 \vec{u}^n \nonumber \\
+\Rightarrow ~~&
+\vec{u}^{n+1} = \vec{u}^n + \Delta t \left[ -\vec{u}^n \cdot \nabla \vec{u}^n
+			  - \frac{1}{\rho} \nabla p - \nu \nabla^2 \vec{u}^n \right]
+\label{discrete_mom}
+\end{align}
+
+Following similar steps as in the continuous case, we take the divergence,
+here $\nabla \cdot$(\ref{discrete_mom}).
+
+\begin{align}
+\nabla \cdot \vec{u}^{n+1} = \nabla \cdot \vec{u}^n
+ + \Delta t \left[ -\nabla \cdot \vec{u}^n \cdot \nabla^2 \vec{u}^n
+			      - \frac{1}{\rho} \nabla^2 p - \nu \nabla (\nabla^2 \cdot \vec{u}^n) \right]
+\end{align}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% continue from here %%%%%%%%%%%%%%%%%%%%%5
+
 To aid in developing a numerical setup for complete Navier-Stokes, we start with some simpler
 cases to build up smaller pieces of code. We begin with Laplace's equation and progress to
 Poisson first.
 
-\subsubsection{Laplace}
+\subsection{Laplace}
 Start with Laplace for the purpose of computational stepping. This will be a simplified form
 that will help to build up to the full forms required for computation.
 
@@ -377,7 +405,7 @@ The next step is to isolate $p_{i,j}$, the value solved on each iteration.
 \Rightarrow ~~&
 p_{i,j} = \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
 			 {2(\Delta x^2 + \Delta y^2)}
-	\nonumber \\ \nonumber \\
+	\\ \nonumber \\
 \text{To simplify the formula, we}&
 \text{ can choose the same grid spacing in both directions.~~~~~~~~~~~~~~~~~~~~~}\nonumber\\
 \text{i.e. let } \Delta x = \Delta y ~~~~~~~~~~~~~~&
@@ -409,12 +437,13 @@ This process can be accelerated by using most-recently calculated $x_i$ values f
 within the same iteration. This is the Gauss-Seidel method. The values converge faster since
 the more accurate values are being used as early as possible.
 
-\subsubsection{Poisson}
-The Laplace equation could be seen as a simplified version of Poisson. We now have a source
-term $b$ on the right-hand-side.
+\subsection{Poisson}
+The Laplace equation from above could be seen as a simplified version of what we do now.
+The Poisson equation has a source term $b$ on the right-hand-side.
 The Poission equation is required to fully represent the effect of pressure in
-the Navier-Stokes equations. Compare to the Laplace equation (\ref{laplace})
+the Navier-Stokes equations. Compare to the Laplace equation (\ref{laplace}).
 The source term $b$ causes the equation to relax initial sources in the field.
+[... that's weird wording... fix it...]
 
 \begin{align}
 \frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= b
@@ -430,32 +459,24 @@ We can discretize in the same manner as for Laplace above.
 
 Again, the next step is transposition to isolate $p_{i,j}$.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%START HERE%%%%%%%%%%%%%%%%%%%
-%Equations below aren't right, i just copied from above%%%%%%%%%%%%%%%%%%%
 \begin{align}
-&\Delta y^2 (p_{i+1,j} - 2p_{i,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} - 2p_{i,j} + p_{i,j-1}) = 0
+&\Delta y^2 (p_{i+1,j} - 2p_{i,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} - 2p_{i,j} + p_{i,j-1})
+ = b_{i,j}
 	\nonumber \\ \nonumber \\
 \Rightarrow ~~&
-\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})
- = 2p_{i,j} (\Delta x^2 + \Delta y^2)
-	\nonumber \\ \nonumber \\
-\Rightarrow ~~&
-p_{i,j} = \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
-			 {2(\Delta x^2 + \Delta y^2)}
-	\nonumber \\ \nonumber \\
-hello!
-	\nonumber \\
-\Rightarrow ~~&
-p_{i,j} = \frac{\Delta x^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
-			 {2(\Delta x^2 + \Delta x^2)}
-	\nonumber \\ \nonumber \\
-\Rightarrow ~~&
-p_{i,j} = \frac{p_{i+1,j} + p_{i-1,j} + p_{i,j+1} + p_{i,j-1}}
-			 {4}
-\label{transposed_poissssssssssssssssssssssssssssson}
+p_{i,j} = \frac{1}{2(\Delta x^2 + \Delta y^2)}
+		 \left[ \Delta y^2(p_{i+1,j} + p_{i-1,j}) + \Delta x^2(p_{i,j+1} + p_{i,j-1})
+		 - b_{i,j} \Delta x^2 \Delta y^2 \right]
 \end{align}
 
-
+With $\Delta x = \Delta y$, this becomes
+\begin{align}
+p_{i,j} = \frac{1}{4}
+		 \left[ (p_{i+1,j} + p_{i-1,j}) + (p_{i,j+1} + p_{i,j-1})
+		 - b_{i,j} \Delta x^2 \right]
+\label{transpoisson}
+\end{align}
+where all terms are from the $n$-th iteration, including the source term $b_{i,j}$.
 
 \subsubsection{Channel flow}
 Pressure-driven
