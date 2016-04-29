@@ -315,28 +315,30 @@ Putting LHS (\ref{lhs}) and RHS (\ref{rhs}) together, we have
 This is Poisson's equation for pressure in two dimensions. Continuity (mass conservation) satisfied. This relation between pressure and velocity can be used
 to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.)[\ref{vid11} 17:45] $f$ is such that pressure satisfies the Poisson equation.
 
-[Discretization]
 
 
 
 \section{Numerical considerations}
+
+[--- Discretization for simpler model(s) ---]
+
+
 At this point, some of the expressions that we have in the continuous case do not work so well
-when discretized for our numerical computations. We would like to have a divergence-free velocity
+when directly translated to discretized form for our numerical computations.
+We would like to have a divergence-free velocity
 but due to numerical effects, it may not always equal zero at each iteration. The strategy used
 here will be to calculate what the conservation of momentum equation should be at the next step
 but then before considering the step complete, do an intermediate calculation for the divergence
 being zero, thereby preserving conservation of mass (continuity), and only then complete that
 iteration.
 
-
 To aid in developing a numerical setup for complete Navier-Stokes, we start with some simpler
 cases to build up smaller pieces of code. We begin with Laplace's equation and progress to
 Poisson first.
 
 \subsubsection{Laplace}
-Start with Laplace for the purpose of computational stepping.
-
-[... maybe these should only be separate sections in the numerical coverage ...]
+Start with Laplace for the purpose of computational stepping. This will be a simplified form
+that will help to build up to the full forms required for computation.
 
 The Laplace equation shows a steady state of a system given boundary
 conditions. There is no time parameter. It is the Poisson equation without a source term (RHS = 0).
@@ -345,11 +347,73 @@ conditions. There is no time parameter. It is the Poisson equation without a sou
 \label{laplace}
 \end{align}
 
+This is discretized using second-order central differencing. As the Laplace operator here
+has an effect like that of diffusion, in that it is isotropic. A central differencing scheme
+is appropriate since it matches the underlying physics. Over the entire grid of solutions,
+each point is solved using contributions from the nearest neighbours in the x and y directions.
+This is a five-point stencil used to obtain the solution for that central point. Calculations
+are repeated for every point on the grid.
+
+These pressure values $p$ (for the entire grid) all happen
+at "false time-step" $n$. There is no time-step, but we do solve by iteratively solving at $n$
+every time. The "time" superscript seen in the discretizations for the previous models will be
+omitted for these terms since they would all be $n$.
+
+\begin{align}
+\frac{p_{i+1,j} - 2p_{i,j} + p_{i-1,j}}{\Delta x^2}
+ + \frac{p_{i,j+1} - 2p_{i,j} + p_{i,j-1}}{\Delta y^2} = 0
+\label{discrete_laplace}
+\end{align}
+
+The next step is to isolate $p_{i,j}$, the value solved on each iteration.
+\begin{align}
+&\Delta y^2 (p_{i+1,j} - 2p_{i,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} - 2p_{i,j} + p_{i,j-1}) = 0
+	\nonumber \\ \nonumber \\
+\Rightarrow ~~&
+\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})
+ = 2p_{i,j} (\Delta x^2 + \Delta y^2)
+	\nonumber \\ \nonumber \\
+\Rightarrow ~~&
+p_{i,j} = \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+			 {2(\Delta x^2 + \Delta y^2)}
+	\nonumber \\ \nonumber \\
+\text{To simplify the formula, we}&
+\text{ can choose the same grid spacing in both directions.~~~~~~~~~~~~~~~~~~~~~}\nonumber\\
+\text{i.e. let } \Delta x = \Delta y ~~~~~~~~~~~~~~&
+	\nonumber \\
+\Rightarrow ~~&
+p_{i,j} = \frac{\Delta x^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+			 {2(\Delta x^2 + \Delta x^2)}
+	\nonumber \\ \nonumber \\
+\Rightarrow ~~&
+p_{i,j} = \frac{p_{i+1,j} + p_{i-1,j} + p_{i,j+1} + p_{i,j-1}}
+			 {4}
+\label{transposed_laplace}
+\end{align}
+
+Equation (\ref{transposed_laplace}) can be written as a system of linear equations which in
+matrix form becomes a band matrix, i.e. a matrix that is zeros except for the diagonal
+two entries above, and two entries below the diagonal. From this perspective, the iterative
+solver can be seen as the Jacobi method of solving linear systems.
+
+\textbf{Aside: the Jacobi method}
+
+Any system of equations with vector of unknowns $\vec{x} = [x_1, x_2,... ,x_n]$ can be written
+in the form $\vec{x} = T\vec{x} + c$ where $T$ is the band matrix. It can be formed by
+isolating each $x_i$ in turn, for each given equation in the system. The initial input $\vec{x}$
+is typically a vector of all zeros. Used on the right-hand-side, this produces a first step
+to approximating the solution for true $x$. At the next iteration, those solutions are input.
+The process repeats until subsequent solutions stop changing by some chosen tolerance.
+This process can be accelerated by using most-recently calculated $x_i$ values from
+within the same iteration. This is the Gauss-Seidel method. The values converge faster since
+the more accurate values are being used as early as possible.
+
 \subsubsection{Poisson}
-The Poission equation is relevant as the pressure term that will be used in
-the Navier-Stokes equation. Compare to the Laplace equation.\ref{laplace}...
+The Laplace equation could be seen as a simplified version of Poisson. We now have a source
+term $b$ on the right-hand-side.
+The Poission equation is required to fully represent the effect of pressure in
+the Navier-Stokes equations. Compare to the Laplace equation (\ref{laplace})
 The source term $b$ causes the equation to relax initial sources in the field.
-... [more on relaxation]...
 
 \begin{align}
 \frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= b
