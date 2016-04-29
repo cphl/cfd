@@ -325,11 +325,12 @@ to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equ
 
 At this point, some of the expressions that we have in the continuous case do not work so well
 when directly translated to discretized form for our numerical computations.
-We would like to have a divergence-free velocity
-but due to numerical effects, it may not always equal zero at each iteration. The strategy used
+We will see that in trying to iteratively solve a discretized Poisson equation, while we would
+like to have a divergence-free velocity,
+due to numerical effects, it may not always equal zero at each iteration. The strategy used
 here will be to calculate what the conservation of momentum equation should be at the next step
 but then before considering the step complete, do an intermediate calculation for the divergence
-being zero, thereby preserving conservation of mass (continuity), and only then complete that
+being zero, thereby preserving continuity (conservation of mass), and only then complete that
 iteration.
 
 To aid in developing a numerical setup for complete Navier-Stokes, we start with some simpler
@@ -418,6 +419,43 @@ The source term $b$ causes the equation to relax initial sources in the field.
 \begin{align}
 \frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= b
 \end{align}
+
+We can discretize in the same manner as for Laplace above.
+
+\begin{align}
+\frac{p_{i+1,j} - 2p_{i,j} + p_{i-1,j}}{\Delta x^2}
+ + \frac{p_{i,j+1} - 2p_{i,j} + p_{i,j-1}}{\Delta y^2} = b_{i,j}
+\label{discrete_poisson}
+\end{align}
+
+Again, the next step is transposition to isolate $p_{i,j}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%START HERE%%%%%%%%%%%%%%%%%%%
+%Equations below aren't right, i just copied from above%%%%%%%%%%%%%%%%%%%
+\begin{align}
+&\Delta y^2 (p_{i+1,j} - 2p_{i,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} - 2p_{i,j} + p_{i,j-1}) = 0
+	\nonumber \\ \nonumber \\
+\Rightarrow ~~&
+\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})
+ = 2p_{i,j} (\Delta x^2 + \Delta y^2)
+	\nonumber \\ \nonumber \\
+\Rightarrow ~~&
+p_{i,j} = \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+			 {2(\Delta x^2 + \Delta y^2)}
+	\nonumber \\ \nonumber \\
+hello!
+	\nonumber \\
+\Rightarrow ~~&
+p_{i,j} = \frac{\Delta x^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+			 {2(\Delta x^2 + \Delta x^2)}
+	\nonumber \\ \nonumber \\
+\Rightarrow ~~&
+p_{i,j} = \frac{p_{i+1,j} + p_{i-1,j} + p_{i,j+1} + p_{i,j-1}}
+			 {4}
+\label{transposed_poissssssssssssssssssssssssssssson}
+\end{align}
+
+
 
 \subsubsection{Channel flow}
 Pressure-driven
