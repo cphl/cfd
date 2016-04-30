@@ -339,6 +339,7 @@ but then before considering the step complete, do an intermediate calculation fo
 being zero, thereby preserving continuity (conservation of mass), and only then complete that
 iteration.
 
+\subsection{Discretizing the momentum equation}
 First, we examine how the problem of non-zero divergence of velocity may arise when we
 discretize the equation of motion (\ref{consmom}) keeping it in vector form.
 
@@ -356,14 +357,52 @@ here $\nabla \cdot$(\ref{discrete_mom}).
 
 \begin{align}
 \nabla \cdot \vec{u}^{n+1} = \nabla \cdot \vec{u}^n
- + \Delta t \left[ -\nabla \cdot \vec{u}^n \cdot \nabla^2 \vec{u}^n
+ + \Delta t \left[ -\nabla \cdot \vec{u}^n \cdot \nabla \vec{u}^n
 			      - \frac{1}{\rho} \nabla^2 p - \nu \nabla (\nabla^2 \cdot \vec{u}^n) \right]
+\label{diverged_mom}
 \end{align}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% continue from here %%%%%%%%%%%%%%%%%%%%%5
+[--- ... major editing needed ... ---]
+
+To satisfy continuity (\ref{continuity}), the divergence of the velocity (vector) should
+be zero, that is, $\nabla \cdot \vec{u}^{n+1}=0$, however it is
+possible that $\nabla \cdot \vec{u}^n \neq 0$ due to numerical errors. Because of this,
+the discretized version cannot simply have $\nabla \cdot \vec{u}^n$ cancelled out at
+every occurrence above. To resolve this problem, the momentum equation and the Poisson
+equation are both solved within one iterative step. When solving Poisson, force divergence
+to be zero in order to have a corrected value for velocity, then use that in the other
+equation. Alternating between the two approximates simultaneous satisfaction of both
+equations. "The velocity field created by the Navier-Stokes equations is not completely
+divergence free in the numericall approach. Think of it as an intermediate step."
+We get some velocity (field) from N-S, but it's divergence is not zero. So we need to
+compute pressure such that continuity is satisfied. Then use the intermediate step's velocity
+field solution in the poisson equation
+
+\subsection{Solving discrete Poisson}
+Recall that Poisson has the form (\ref{poisson}), so rearrange (\ref{diverged_mom})
+accordingly (with its LHS=0 since we must have that $\vec{u}^{n+1} = 0$ for continuity
+to be satisfied).
+
+\begin{align}
+& \frac{- \nabla \cdot \vec{u}^n}{\Delta t}
+	= - \nabla \cdot (\vec{u}^n \cdot \nabla \vec{u}^n)
+	  - \frac{1}{\rho} \nabla^2 p
+	  - \nu \nabla^2(\nabla \vec{u}^n)
+														  \nonumber \\ \nonumber \\
+\Rightarrow ~~&
+\nabla^2 p = -\rho \left[
+					\frac{ - \nabla \cdot \vec{u}^n}{\Delta t}
+					+ \nabla \cdot (\vec{u}^n \cdot \nabla \vec{u}^n)
+					+ \nu \nabla^2(\nabla \cdot \vec{u}^n)			\right]
+\label{discrete_poisson}
+\end{align}
+
+This is the equation that needs to be solved next.
+
+[-----... fix ordering ... ---]
 
 To aid in developing a numerical setup for complete Navier-Stokes, we start with some simpler
 cases to build up smaller pieces of code. We begin with Laplace's equation and progress to
-Poisson first.
+Poisson.
 
 \subsection{Laplace}
 Start with Laplace for the purpose of computational stepping. This will be a simplified form
@@ -447,6 +486,7 @@ The source term $b$ causes the equation to relax initial sources in the field.
 
 \begin{align}
 \frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= b
+\label{poisson}
 \end{align}
 
 We can discretize in the same manner as for Laplace above.
