@@ -310,10 +310,10 @@ Putting LHS (\ref{lhs}) and RHS (\ref{rhs}) together, we have
 =
 -\frac{1}{\rho} \left( \D[^2p]{x^2} + \D[^2p]{y^2} \right)
 \nonumber \\
-\text{(re-arrange terms)}~~ \nonumber \\ \nonumber
+\text{(re-arrange terms)}~~ \nonumber \\
 \Rightarrow~~~&\D[^2p]{x^2} + \D[^2p]{y^2} =
 - \rho \left[ \left(\D[u]{x}\right)^2 + 2\D[v]{x}\D[u]{y} + \left(\D[v]{y}\right)^2 \right]
-\nonumber \\
+\label{poisson_continuous_2-component} \\
 \text{which has form}& \nonumber \\ \nonumber
 \Rightarrow~~~&\nabla^2 p = function
 \end{align}
@@ -392,7 +392,7 @@ to be satisfied).
 					\frac{ - \nabla \cdot \vec{u}^n}{\Delta t}
 					+ \nabla \cdot (\vec{u}^n \cdot \nabla \vec{u}^n)
 					+ \nu \nabla^2(\nabla \cdot \vec{u}^n)			\right]
-\label{discrete_poisson}
+\label{discrete_poisson_vector}
 \end{align}
 
 This is the equation that needs to be solved next.
@@ -523,6 +523,51 @@ For a fine grid, the pressure decrease is less for a given point (but there are 
 nearby to be affected by this smaller influence also).
 The magnitude of relaxation decreases with each iteration as the pressure values become closer
 to the source values, smoothed over differences in neighbouring points.
+
+
+\subsection{Simulating different types of flows}
+With different conditions, we can model different types of flow using the Navier-Stokes equations.
+
+\subsubsection{Cavity flow}
+We have equations for motion (\ref{component-1_consmom}) and (\ref{component-2_consmom})
+and one for pressure (\ref{poisson_continuous_2-component}) from before. Now we use their
+discretized forms.
+
+Start with (\ref{component-1_consmom}), for $u$-momentum. Use forward difference in time,
+backward difference for convective terms, and second-order central difference for diffusive terms.
+
+\begin{align}
+\frac{u^{n+1}_{i,j}-u^n_{i,j}}{\Delta t}
+	 &+ u^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta x}
+	  + v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} \nonumber\\
+	&= -\frac{1}{\rho} \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta x}
+	  + \nu \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2}
+	  + \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)
+\end{align}
+
+Likewise, for $v$.
+
+\begin{align}
+\frac{v^{n+1}_{i,j}-v^n_{i,j}}{\Delta t}
+	 &+ u^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta x}
+	  + v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} \nonumber\\
+	&= -\frac{1}{\rho} \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta y}
+	  + \nu \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2}
+	  + \frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2} \right)
+\end{align}
+
+The Poisson equation (\ref{poisson_continuous_2-component}) discretizes as:
+%%%%%%%%%%%% check this over %%%%%%%%%%%
+\begin{align}
+\frac{p_{i+1,j}^{n}-2p_{i,j}^{n}+p_{i-1,j}^{n}}{\Delta x^2} &
+	 + \frac{p_{i,j+1}^{n}-2*p_{i,j}^{n}+p_{i,j-1}^{n}}{\Delta y^2} \nonumber \\ \nonumber
+	=& \rho\left[ \frac{1}{\Delta t}
+	   \left(\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}+\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\right)
+	\right(
+-\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}
+- \ 2\frac{u_{i,j+1}-u_{i,j-1}}{2\Delta y}\frac{v_{i+1,j}-v_{i-1,j}}{2\Delta x}
+-\left.\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\right]
+\end{align}
 
 \subsubsection{Channel flow}
 Pressure-driven
