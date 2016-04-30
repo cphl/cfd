@@ -85,15 +85,14 @@ Fluid flow equations addressed:
 \item linear convection
 \item nonlinear convection
 \item diffusion
-\item Burgers equation
-\item Laplace, Poisson, Navier-Stokes
+\item Burgers equation (convection with diffusion
+\item Navier-Stokes (using solution to Poisson equation)
 \end{itemize}
 
-... Applications...
+Changing the boundary conditions:
 
 ... Navier-stokes: Channel / cavity flow ...
 
-...
 
 \section{Physics}
 
@@ -404,7 +403,7 @@ To aid in developing a numerical setup for complete Navier-Stokes, we start with
 cases to build up smaller pieces of code. We begin with Laplace's equation and progress to
 Poisson.
 
-\subsection{Laplace}
+\subsubsection{Laplace}
 Start with Laplace for the purpose of computational stepping. This will be a simplified form
 that will help to build up to the full forms required for computation.
 
@@ -476,12 +475,12 @@ This process can be accelerated by using most-recently calculated $x_i$ values f
 within the same iteration. This is the Gauss-Seidel method. The values converge faster since
 the more accurate values are being used as early as possible.
 
-\subsection{Poisson}
+\subsubsection{Poisson}
 The Laplace equation from above could be seen as a simplified version of what we do now.
 The Poisson equation has a source term $b$ on the right-hand-side.
 The Poission equation is required to fully represent the effect of pressure in
 the Navier-Stokes equations. Compare to the Laplace equation (\ref{laplace}).
-The source term $b$ causes the equation to relax initial sources in the field.
+Poisson relaxes initial sources in the field.
 [... that's weird wording... fix it...]
 
 \begin{align}
@@ -517,6 +516,13 @@ p_{i,j} = \frac{1}{4}
 \label{transpoisson}
 \end{align}
 where all terms are from the $n$-th iteration, including the source term $b_{i,j}$.
+So to interpret this system:
+The pressure at a grid point depends on contributions from its four nearest
+neighbours, but decreased by the initial source amount weighted by grid-spacing squared.
+For a fine grid, the pressure decrease is less for a given point (but there are more points
+nearby to be affected by this smaller influence also).
+The magnitude of relaxation decreases with each iteration as the pressure values become closer
+to the source values, smoothed over differences in neighbouring points.
 
 \subsubsection{Channel flow}
 Pressure-driven
