@@ -543,17 +543,33 @@ backward difference for convective terms, and second-order central difference fo
 	&= -\frac{1}{\rho} \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta x}
 	  + \nu \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2}
 	  + \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)
-\end{align}
-
-Likewise, for $v$.
-
-\begin{align}
+												\nonumber
+\intertext{Isolate $u^{n+1}_{i,j}$ to the LHS.}	\nonumber
+u^{n+1}_{i,j} = u^n_{i,j} + \Delta t \Biggl[
+	&- \frac{1}{\rho}  \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta x}
+	- u^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta x}%
+	- v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} \nonumber \\
+	&+ \nu \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2}
+	+ \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)
+	 \Biggr]
+\intertext{Likewise, for $v$.}
+												\nonumber
 \frac{v^{n+1}_{i,j}-v^n_{i,j}}{\Delta t}
 	 &+ u^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta x}
 	  + v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} \nonumber\\
 	&= -\frac{1}{\rho} \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta y}
 	  + \nu \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2}
 	  + \frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2} \right)
+															\nonumber \\
+\intertext{$\Rightarrow$} \nonumber
+v^{n+1}_{i,j} = v^n_{i,j} + \Delta t \Biggl[
+	&- \frac{1}{\rho}  \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta y}
+	- u^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta x}%
+	- v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} \nonumber \\
+	&+ \nu \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2}
+				+\frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2}
+		   \right)
+	 \Biggr]
 \end{align}
 
 The Poisson equation (\ref{poisson_continuous_2-component}) discretizes as:
@@ -598,6 +614,9 @@ p_{i,j} = -\frac{1}{2(\Delta x^2 + \Delta y^2)} \cdot &
 		&+ \Delta x^2 (p_{i,j+1} + p_{i,j-1})
 	\rbrace
 \end{align}
+
+But for now, continue with the reference because it works with the computation.
+So isolate pressure at next "time step" on the LHS.
 
 \subsubsection{Channel flow}
 Pressure-driven
