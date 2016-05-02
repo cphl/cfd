@@ -89,12 +89,13 @@ Fluid flow equations addressed:
 \item Navier-Stokes (using solution to Poisson equation)
 \end{itemize}
 
-Changing the boundary conditions:
-
-... Navier-stokes: Channel / cavity flow ...
+Changing the boundary conditions allows us to solve the Navier-Stokes equations
+for channel flow or cavity flow.
 
 
 \section{Physics}
+
+The equations governing models of flow are described in this section.
 
 \subsection{Introduction to models in 1-dimensional form}
 Beginning with 1-dimensional models, we can describe the differences
@@ -159,9 +160,9 @@ The constant velocity is now a vector-valued velocity with two dimensions
 $(u, v)$, with partial derivatives, we now have coupled equations.
 
 \begin{align}
-\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x}  + v\frac{\partial u}{\partial x} 
+\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x}  + v\frac{\partial u}{\partial y} 
 &= 0		\nonumber \\ \nonumber\\
-\frac{\partial v}{\partial t} + u\frac{\partial v}{\partial x}  + v\frac{\partial v}{\partial x} 
+\frac{\partial v}{\partial t} + u\frac{\partial v}{\partial x}  + v\frac{\partial v}{\partial y} 
 &= 0
 	\label{2d_nonlinconv}
 \end{align}
@@ -279,7 +280,8 @@ the left-hand side becomes
 	+ v \D{y} \left( \D[u]{x} + \D[v]{y} \right)
 \end{align}
 looking at the common terms in parentheses (divergence of velocity),
-we know these = 0 from the conservation of mass equation, which we must obey (\ref{component_consmass}), so we are left with the remaining terms
+we know these = 0 from the conservation of mass equation, which we must obey
+ (\ref{component_consmass}), so we are left with the remaining terms
 \begin{align}
 = \D[u]{x}\D[u]{x} + \D[u]{y}\D[u]{x}
 	+ \D[v]{x}\D[u]{y} + \D[v]{y}\D[v]{y}
@@ -317,17 +319,95 @@ Putting LHS (\ref{lhs}) and RHS (\ref{rhs}) together, we have
 \text{which has form}& \nonumber \\ \nonumber
 \Rightarrow~~~&\nabla^2 p = function
 \end{align}
-This is Poisson's equation for pressure in two dimensions. Equations (\ref{continuity}) and {\ref{consmom}) are satisfied simultaneously.
-This relation between pressure and velocity can be used
-to couple the equations for Navier-Stokes. (When RHS is 0, it is the Laplace equation.) $f$ is the function such that pressure satisfies the Poisson
-equation.
+This is Poisson's equation for pressure in two dimensions.
+Equations (\ref{continuity}) and {\ref{consmom}) are satisfied simultaneously.
+This relation between pressure and velocity can be used to couple the equations
+for Navier-Stokes. (When RHS is 0, it is the Laplace equation.) $f$ is the
+function such that pressure satisfies the Poisson equation.
 
 
 \section{Numerical considerations}
 
-[--- Discretization for simpler model(s) --- or not...]
+In some simpler cases, the discretization of the above continuous equations can
+be a straightforward translation. In general, these differencing schemes are used
+for this project:
+
+\begin{itemize}
+\item time stepping: forward difference
+\item convection: backward difference
+\item diffusion: central difference, second order
+\end{itemize}
+
+The discretized equations are solved for the values of interest.
+The value at the next time step, is dependent upon various values of the current
+time step. We start with given initial conditions.
+
+The spatial component is discretized into a grid according to the number of
+dimensions and solutions are found for each point over a set number of time
+steps, or after a specified tolerance is satisfied indicate steady state having
+been reached.
+
+Superscripts $n$ are used for time steps,
+and subscripts $i$ and $j$ for spatial grid points.
+
+Solving these equations has some issues that do not arise in the continuous form
+and these will be addressed along the way in the examples that follow.
+
+\subsection{Discretization examples (with transposition to solve for next iterative step)}
+Simpler examples of discretization will be shown to have the idea before moving
+on to more generalized models. However, all of the differencing schemes here are
+based on using a Taylor expansion about a point to obtain the definition of the
+derivative and in turn we use an approximation to that derivative by disregarding
+higher order terms.
+
+\subsubsection{Linear Convection: 1-d to 2-d}
+
+[--- do I want to do some Taylor expanding here? Nice for my own
+reference but may not be necessary/good for report ---]%%%%%%
+
+With forward difference on the time dependent term and backward difference on the second, Equation (\ref{1d_linconv}) becomes:
+
+\begin{align}
+\frac{u^{n+1}_i - u^n_i}{\Delta t} + c \frac{u^n_i - u^n_{i-1}}{\Delta x} = 0
+\label{discrete_1d_linconv}
+\intertext{Transpose this to get values at time $t_{n+1}$ at position $x_i$.}
+u^{n+1}_i = u^{n}_i - \frac{c \Delta t}{\Delta x} (u^n_i - u^n_{i-1})
+\end{align}
+
+In two dimensions, we have $x$- and $y$-components.
+From (\ref{2d_linconv}) or above (\ref{discrete_1d_linconv}), we get:
+
+\begin{align}
+&\frac{u^{n+1}_{i,j} - u^{n}_{i,j}}{\Delta t}
+	+ c \frac{u^{n}_{i,j} - u^{n}_{i-1,j}}{\Delta x}
+	+ c \frac{u^{n}_{i,j} - u^{n}_{i,j-1}}{\Delta y} = 0 \\
+\Rightarrow ~~
+&u^{n+1}_{i,j} = u^n_{i,j}
+				- \frac{c \Delta t}{\Delta x}(u^n_{i,j} - u^n_{i-1,j})
+				- \frac{c \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
+\end{align}
+
+The subsequent models will be discretized in their 2-dimensional form.
+
+\subsubsection{Nonlinear convection}
+As with equations (\ref{2d_nonlinconv}), we need to handle non-constant velocity fields
+$u$ and $v$.
+
+\begin{align}
+&\frac{u^{n+1}_{i,j} - u^{n}_{i,j}}{\Delta t}
+	+ u^{n}_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i-1,j}}{\Delta x}
+	+ v^{n}_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i,j-1}}{\Delta y} = 0 \nonumber \\
+&\frac{v^{n+1}_{i,j} - v^{n}_{i,j}}{\Delta t}
+	+ u^{n}_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i-1,j}}{\Delta x}
+	+ v^{n}_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i,j-1}}{\Delta y} = 0 \\
+\Rightarrow ~~ \nonumber \\
+&u^{n+1}_{i,j} = u^n_{i,j}
+				- \frac{c \Delta t}{\Delta x}(u^n_{i,j} - u^n_{i-1,j})
+				- \frac{c \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
+\end{align}
 
 
+\subsection{Navier-Stokes}
 At this point, some of the expressions that we have in the continuous case do not work so well
 when directly translated to discretized form for our numerical computations.
 We will see that in trying to iteratively solve a discretized Poisson equation, while we would
