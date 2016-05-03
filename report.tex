@@ -388,6 +388,44 @@ From (\ref{2d_linconv}) or above (\ref{discrete_1d_linconv}), we get:
 \end{align}
 
 The subsequent models will be discretized in their 2-dimensional forms.
+But first, it would be helpful to address some constraints in using
+differencing methods in numerical schemes.
+
+\subsubsection{Precision and the CFL condition}
+When using these methods to compute solutions, there are sources of error that
+will alter the results. Awareness of these effects will help to interpret the results
+correctly. Firstly, there is the error introduced from the discretizations
+being derived from approximations. If the grid spacing is wide, these errors will
+dominate over the imprecision inherent to the computer architecture and the selected
+precision level in the programming language.
+
+If we feed an initial condition of a particular waveform to the linear convection model,
+the expected solution would be the same shape waveform in another location after being
+convected over time, with speed $u$ without any other effect. However, we do see a shape
+change in Figure \ref{fig:numerical_diffusion}. The initial condition is a hat function
+and as it is convected, it also accumulates round-off error at every iteration. This
+numerical diffusion is from the method of computation and not expected in the physics
+of the system. The effect can be somewhat mitigated by taking a finer spatial mesh,
+as in Figure \ref{fig:num_diff_fine_mesh}.
+
+It would be tempting to take smaller and smaller grid sizes, but a problem arises when
+the grid size is smaller than the distance moved by a point on the waveform in one
+timestep, i.e. if $u\Delta t > \Delta x$. Non-physical artefacts appear in the computations
+plotted in Figure \ref{fig:num_diff_too_fine}.
+
+To prevent this from occurring. The size of the timestep and grid size must be constrained
+against each other using
+
+\begin{align}
+\sigma = \frac{u \Delta t}{\Delta x} \leq \sigma_{max}
+\end{align}
+
+where $\sigma$ is the Courant number and the $u$ is the speed (non-negative).
+The constraint is called the Courant–Friedrichs–Lewy or CFL condition.
+For explicit methods (as we have here), $\sigma$ should be less than 1.
+This will be a consideration for any of the convective flows in this project.
+Adding the condition to decide timesteps based on chosen gridspacing (or vice versa)
+will prevent these undesired artefacts from appearing.
 
 \subsubsection{Nonlinear convection}
 As with equations in (\ref{2d_nonlinconv}), we need to handle non-constant velocity
@@ -825,11 +863,6 @@ u^{n+1}_{i,j} = u^n_{i,j} + \Delta t \Biggl[
 \end{align}
 
 so there is an addition amount $F\Delta t$ for the $u$-velocity every time step.
-
-\subsection{CFL condition}
-choosing constant for CFL, motivation
-[... move this up when we're doing Burgers near ...]
-
 
 \section{Coding strategy}
 
