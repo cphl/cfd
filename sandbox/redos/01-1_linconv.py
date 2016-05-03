@@ -28,7 +28,7 @@ def linear_convection_1(nx, x_max, dt, nt, u0, c=1):
         # shift 1 right = prev t - const*(prev t - prev t one to the left)
     return u
 
-nx = 41
+nx = 71  # 41 for Figure 1, 81 for figure 2, 83 for fig 3
 x_max = 2
 dt = 0.025
 nt = 40
@@ -48,7 +48,12 @@ def plot1d(solns_array, n, x_max):
     plt.plot(np.linspace(0, 2, nx), solns_array[n, :])
     plt.show()
 
+# code for Figure 1 in report:
 for i in range(35):
     plot1d(solns, i, x_max)
+
+# code for Figure 2, 3, 4 in report:
+figure()
+plot1d(solns, i, x_max)
 
 # ok pretty solid until here. But not solid on animation. But will skip :(

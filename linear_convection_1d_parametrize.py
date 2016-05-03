@@ -8,7 +8,7 @@ from matplotlib import pyplot  # plotting library
 
 def lin_convection(nx=41, nt=25, dt=0.025, c=1):
     """ Time-step a solution grid for linear convection.
-    
+
     nx -- number of grid points (original was 41);
     nt -- number of timesteps (original was 25);
     dt -- delta t, the size of timestep (original was 0.025);
@@ -20,11 +20,11 @@ def lin_convection(nx=41, nt=25, dt=0.025, c=1):
     u = numpy.ones(nx)
     u[0.5/dx: 1/dx + 1] = 2  # given init conds. TODO: check why int warning
 
-    pyplot.plot(numpy.linspace(0, 2, nx), u)    
-    
+    pyplot.plot(numpy.linspace(0, 2, nx), u)
+
     # timestepping
     un = numpy.ones(nx)
-    
+
     for n in range(nt):
         un = u.copy()
         pyplot.plot(numpy.linspace(0, 2, nx), u)  # extra plot tp show steps

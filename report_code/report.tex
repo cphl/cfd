@@ -399,7 +399,7 @@ precision level in the programming language.
 If we feed an initial condition of a particular waveform to the linear convection model,
 the expected solution would be the same shape waveform in another location after being
 convected over time, with speed $u$ without any other effect. However, we do see a shape
-change in Figure \ref{fig:numerical_diffusion}. The initial condition is a hat function
+change in Figure \ref{fig:num_diff}. The initial condition is a hat function
 and as it is convected, it also accumulates round-off error at every iteration. This
 numerical diffusion is from the method of computation and not expected in the physics
 of the system. The effect can be somewhat mitigated by taking a finer spatial mesh,
@@ -922,9 +922,42 @@ and a selection of notable results are shown. For more detail, animation and ful
 using different parameters can be tested at https://github.com/cphl/cfd .
 
 
-\subsubsection{Convection}
-linear convection: note false diffusion caused by roundoff in computations
-show artefacts from choosing bad timesteps
+\subsubsection{Linear Convection}\label{cfl+friends}
+This is the simplest 1-d case. Plots at multiple timesteps have been overlaid.
+The initial condition is the hat function starting on the left.
+Note the false diffusion caused by roundoff in computations such that it ends up being a
+shorter, wider waveform without hat shape on the right. Figure \ref{fig:num_diff} from
+$\texttt{01-1\_}$\texttt{linconv.py}.
+
+	\begin{figure}[num_diff]
+	\centering
+	\caption{1-d linear convection only. Numerical diffusion. Number of grid points nx=41}
+	\includegraphics[scale=0.8]{num_diff.png}
+	\label{fig:num_diff}
+	\end{figure}
+
+	\begin{figure}[num_diff_fine_mesh]
+	\centering
+	\caption{1-d linear convection only. Less false diffusion. Number of grid points nx=71}
+	\includegraphics[scale=0.8]{better_hat.png}
+	\label{fig:num_diff_fine_mesh}
+	\end{figure}
+
+	\begin{figure}[num_diff_finest_mesh]
+	\centering
+	\caption{1-d linear convection only. Hat mostly retained. Number of grid points nx=81}
+	\includegraphics[scale=0.8]{keep_hat.png}
+	\label{fig:num_diff_finest_mesh}
+	\end{figure}
+
+	\begin{figure}[num_diff_too_fine]
+	\centering
+	\caption{1-d linear convection only. CFL condition broken. Number of grid points nx=83}
+	\includegraphics[scale=0.8]{cfl_broke.png}
+	\label{fig:num_diff_too_fine}
+	\end{figure}
+
+
 
 \subsubsection{Nonlinear convection}
 \subsubsection{Diffusion}
@@ -935,12 +968,7 @@ w/w/o shocks
 \subsubsection{Navier-Stokes channel flow}
 
 
-%	\begin{figure}[qfc]
-%	\centering
-%	\caption{Quantum Factoring Circuit}
-%	\includegraphics[scale=0.8]{QuantumFactoringCircuit.eps}
-%	\label{fig:qfg}
-%	\end{figure}
+
 
 \section*{References}
 
