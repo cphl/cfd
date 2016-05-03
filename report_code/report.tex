@@ -29,7 +29,7 @@
   \vspace*{4mm}
 }
 
-\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{-: #4}{#1}}
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{submitted by: #4}{#1}}
 \newcommand{\R}{\mathbb{R}}     % use for capital R real number set symbol
 \newcommand{\Z}{\mathbb{Z}}     % use for capital Z integer set symbol
 \newcommand{\D}[2][]{\frac{\partial#1}{\partial#2}}
@@ -68,7 +68,7 @@
 %\renewcommand{\baselinestretch}{1.25}
 
 \begin{document}
-\lecture{Computational fluid dynamics}{Spring 2016}{}{}
+\lecture{Computational fluid dynamics}{Spring 2016}{Prof. Moshe Rozali}{C. Leung}
 % =========================================================================== %
 \section{Introduction}
 
@@ -90,6 +90,9 @@ Fluid flow equations addressed:
 \item Navier-Stokes (cavity flow and channel flow conditions)
 \end{itemize}
 
+The work here closely follows that presented in the course material for
+Professor L.A. Barba's Computational Fluid Dynamics course, specifically
+the section leading up to the Navier-Stokes equations.
 
 \section{Physics}
 
@@ -109,7 +112,7 @@ In the nonlinear case, the constant speed is replaced by $u$ which is the
 solution $u(x,t)=u_0(x-ct)$ given an initial condition $u(x,0)=u_0(x)$
 The speed of propagation is different depending upon the location.
 Because of this, shocks may be observed (see corresponding treatment in the
-numerical considerations section \ref{}). It is also known as the inviscid
+numerical considerations section). It is also known as the inviscid
 Burgers equation.
 \ref{1d_nonlinconv}
 
@@ -690,7 +693,7 @@ For a fine grid, the pressure decrease is less for a given point (but there are 
 nearby to be affected by this smaller influence also).
 The magnitude of relaxation decreases with each iteration as the pressure values become closer
 to the source values, smoothed over differences in neighbouring points.
-(See this relaxation effect graphically in the results section(\ref{plot_poisson}).)
+(See this relaxation effect graphically in the results section(\ref{fig:poisson_5000}).)
 
 
 \subsubsection{Modelling cavity flow}
@@ -898,23 +901,6 @@ timestep can be plotted when provided as an input to the plot function. Alternat
 another function was made for animating the time evolution of the system with the option
 of visualization as a surface plot or a flat colourmap of values.
 
-\subsubsection{Further additions desired}
-Some planned extensions to the code would make future computations and visualizations
-run smoother: writing solutions to disk (small change) and functionality to read solutions
-from disk at a later time, better usability of animation functions --aim for ease of usage
-when changing platforms, ability to sample every $k$-th timestep of the solutions to
-quickly change granularity of animation (partially complete), saving the animations once
-complete (at debug stage), debugging the just-in-time compilation library so that the code
-could run faster for larger data sets, and potentially other changes that could optimize the
-runtime at the computational level.
-
-At the numerical level, some improvements might be gained by changing the discretization
-scheme. For example, it might be acceptable to use implicit methods in some cases, and thereby
-improve the stability of the problem. I suspect there may be some steps where programming
-language optimizations can be used with regards to sparse matrix computations, for example
-in using Poisson's equation. If it were valid to apply these methods for the physics of the
-system, the numerical scheme combined with language features could increase the accuracy and
-the speed of the computations.
 
 \subsection{Results}
 
@@ -937,7 +923,7 @@ $\texttt{01-1\_}$\texttt{linconv.py}.
 	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Numerical diffusion. Number of grid points nx=41}
-	\includegraphics[scale=0.8]{num_diff.png}
+	\includegraphics[scale=0.6]{num_diff.png}
 	\label{fig:num_diff}
 	\end{figure}
 
@@ -947,14 +933,14 @@ numerical diffusion and it retains more of the initial condition's hat shape.
 	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Less false diffusion. Number of grid points nx=71}
-	\includegraphics[scale=0.8]{better_hat.png}
+	\includegraphics[scale=0.6]{better_hat.png}
 	\label{fig:num_diff_fine_mesh}
 	\end{figure}
 
 	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Hat mostly retained. Number of grid points nx=81}
-	\includegraphics[scale=0.8]{keep_hat.png}
+	\includegraphics[scale=0.6]{keep_hat.png}
 	\label{fig:num_diff_finest_mesh}
 	\end{figure}
 
@@ -967,14 +953,14 @@ a few more points to the spatial grid as seen in figure \ref{fig:num_diff_too_fi
 	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. CFL condition broken. Number of grid points nx=83}
-	\includegraphics[scale=0.8]{cfl_broke.png}
+	\includegraphics[scale=0.6]{cfl_broke.png}
 	\label{fig:num_diff_too_fine}
 	\end{figure}
 
 	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Numerical artefacts dominate. nx=91}
-	\includegraphics[scale=0.8]{cfl_explode.png}
+	\includegraphics[scale=0.6]{cfl_explode.png}
 	\label{fig:num_diff_too_fine_explode}
 	\end{figure}
 
@@ -988,21 +974,21 @@ for visualization purposes. Script used: \texttt{diffusion\_2d.py}
 	\begin{figure}[H]
 	\centering
 	\caption{2-d diffusion: Initial condition}
-	\includegraphics[scale=0.8]{diff_0.png}
+	\includegraphics[scale=0.6]{diff_0.png}
 	\label{fig:diff_0}
 	\end{figure}
 
 	\begin{figure}[H]
 	\centering
 	\caption{2-d diffusion: Intermediate step (10 steps later)}
-	\includegraphics[scale=0.8]{diff_1.png}
+	\includegraphics[scale=0.6]{diff_1.png}
 	\label{fig:diff_1}
 	\end{figure}
 	
 	\begin{figure}[H]
 	\centering
 	\caption{2-d diffusion: Final step (50 steps after initial)}
-	\includegraphics[scale=0.8]{diff_final.png}
+	\includegraphics[scale=0.6]{diff_final.png}
 	\label{fig:diff_final}
 	\end{figure}
 
@@ -1016,14 +1002,14 @@ parameters.
 	\begin{figure}[H]
 	\centering
 	\caption{Initial condition: 2-d hat on flat colourmap}
-	\includegraphics[scale=0.7]{burger_0.png}
+	\includegraphics[scale=0.45]{burger_0.png}
 	\label{fig:burger_0}
 	\end{figure}
 
 	\begin{figure}[H]
 	\centering
 	\caption{Burgers equation: after 155 timesteps}
-	\includegraphics[scale=0.7]{burger_final.png}
+	\includegraphics[scale=0.45]{burger_final.png}
 	\label{fig:burger_final}
 	\end{figure}
 
@@ -1048,18 +1034,22 @@ for relaxation and 5000 steps.
 	\end{figure}
 	
 \subsubsection{Navier-Stokes cavity flow}
-The next two scripts \texttt{ns\_cavity.py} and \texttt{ns\_channel} are directly from
+The next two scripts \texttt{ns\_cavity.py} and \texttt{ns\_channel.py} are directly from
 the "12 Steps" notes with minor modifications to work with current libraries and some
-adjustments made to parameters. Otherwise it follows directly from the numerical schemes
+adjustments made to parameters for visualization.
+Otherwise it follows directly from the numerical schemes
 but with auxiliary variables to hold temporary values instead of having to calculate
 it in long expressions that are prone to typing transcription errors.
 
-Cavity flow has a the external velocity on the top boundary (figure \ref{fig:cavity}).
+Cavity flow has a the external velocity on the top boundary (figure \ref{fig:cavity_0ish}).
 This boundary condition is reset at every iteration while the inside of the field
 changes with each iteration (until steady state). Figure \ref{fig:cavity_0ish} shows
 the system near initial condition, far from steady state. Then \ref{fig:cavity_med}
 shows in interim point, and \ref{fig:cavity_final0} and \ref{fig:cavity_final} show
 that we are near steady state.
+
+The arrows indicate velocity. Colour represents the pressure.
+
 	\begin{figure}[H]
 	\centering
 	\caption{Navier-Stokes cavity flow: shows top boundary condition velocity, 20 iterations}
@@ -1089,7 +1079,69 @@ that we are near steady state.
 	\end{figure}
 
 \subsubsection{Navier-Stokes: channel flow}
+Channel flow as the extra source term for persistent pressure gradient in one direction
+($F=1$). Walls are reset to zero at every iteration.
+Periodic boundary conditions were used such that the left and right walls wrap and this plot
+can represent flow seen in an infinitely long channel. (Another option would be to extend
+the x-axis very long and only inspect the middle section, but computationally, periodic
+conditions work well here.)
+The gradient of the velocity is such that it matches
+the zero velocity at the top and bottom boundaries while the middle of the channel could
+accelerate until it reached the steady state value.
+The code is set up to terminate once it reaches a tolerance of less than 0.001 difference
+in results between subsequent iterations. This final state is shown in Figure
+\ref{fig:channel_steady} but if we take a look before it has reached a reasonable steady state,
+with larger differences between iterations, we would have something like Figure
+\ref{fig:channel_not-yet} where the middle of the channel has not had the chance to come
+up to speed yet.
+
+	\begin{figure}[H]
+	\centering
+	\caption{Navier-Stokes channel flow: near steady state, tolerance = 0.001}
+	\includegraphics[scale=0.39]{channel_steady.png}
+	\label{fig:channel_steady}
+	\end{figure}
+
+	\begin{figure}[H]
+	\centering
+	\caption{Navier-Stokes channel flow: far from steady state, tolerance = 0.05}
+	\includegraphics[scale=0.39]{channel_not-yet.png}
+	\label{fig:channel_not-yet}
+	\end{figure}
+
+\subsection*{Further additions desired}
+Extensions to the code would make future computations and visualizations
+run smoother: writing solutions to disk (small change) and functionality to read solutions
+from disk at a later time, better usability of animation functions --aim for ease of usage
+when changing platforms, ability to sample every $k$-th timestep of the solutions to
+quickly change granularity of animation (partially complete), saving the animations once
+complete (at debug stage), debugging the just-in-time compilation library so that the code
+could run faster for larger data sets, and potentially other changes that could optimize the
+runtime at the computational level.
+
+At the numerical level, some improvements might be gained by changing the discretization
+scheme. For example, it might be acceptable to use implicit methods in some cases, and thereby
+improve the stability of the problem. I suspect there may be some steps where programming
+language optimizations can be used with regards to sparse matrix computations, for example
+in using Poisson's equation. If it were valid to apply these methods for the physics of the
+system, the numerical scheme combined with language features could increase the accuracy and
+the speed of the computations.
+
 
 \section*{References}
+
+Barba, L.A.  "CFD Python: 12 steps to Navier-Stokes." Accessed Jan-May 2016.
+\begin{itemize}
+\item	http://lorenabarba.com/blog/cfd-python-12-steps-to-navier-stokes/ 
+\item	https://github.com/barbagroup/CFDPython
+\item	https://piazza.com/bu/spring2012/me702/home
+\end{itemize}
+
+Course notes, Phys 410. Fall 2015, UBC.
+
+DeVries, P.L. \textit{A first course in Computational Physics}, 2nd ed. 2011.
+
+Coding references cited within the scripts at the code repository at
+	https://github.com/cphl/cfd
 
 \end{document}
