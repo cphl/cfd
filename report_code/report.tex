@@ -11,6 +11,7 @@
 %\usepackage{psfig}
 \usepackage{enumerate}  % use this for lettered points
 \usepackage{hyperref}   % to add links
+\usepackage{float}	%stop figures from going to the end of the text
 
 \newcommand{\handout}[5]{
   \noindent
@@ -933,7 +934,7 @@ Note the false diffusion caused by roundoff in computations such that it ends up
 shorter, wider waveform without hat shape on the right. Figure \ref{fig:num_diff} from
 $\texttt{01-1\_}$\texttt{linconv.py}.
 
-	\begin{figure}[num_diff]
+	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Numerical diffusion. Number of grid points nx=41}
 	\includegraphics[scale=0.8]{num_diff.png}
@@ -943,14 +944,14 @@ $\texttt{01-1\_}$\texttt{linconv.py}.
 Figure \ref{fig:num_diff_fine_mesh} shows that making a finer spatial grid reduces the
 numerical diffusion and it retains more of the initial condition's hat shape.
 
-	\begin{figure}[num_diff_fine_mesh]
+	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Less false diffusion. Number of grid points nx=71}
 	\includegraphics[scale=0.8]{better_hat.png}
 	\label{fig:num_diff_fine_mesh}
 	\end{figure}
 
-	\begin{figure}[num_diff_finest_mesh]
+	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Hat mostly retained. Number of grid points nx=81}
 	\includegraphics[scale=0.8]{keep_hat.png}
@@ -963,14 +964,14 @@ a fine mesh consisting of 81 points along the $x$-axis, but as soon as this is i
 (figure \ref{fig:num_diff_too_fine}) and these effect grow quickly with the addition of only
 a few more points to the spatial grid as seen in figure \ref{fig:num_diff_too_fine_explode}.
 
-	\begin{figure}[num_diff_too_fine]
+	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. CFL condition broken. Number of grid points nx=83}
 	\includegraphics[scale=0.8]{cfl_broke.png}
 	\label{fig:num_diff_too_fine}
 	\end{figure}
 
-	\begin{figure}[num_diff_too_fine_explode]
+	\begin{figure}[H]
 	\centering
 	\caption{1-d linear convection only. Numerical artefacts dominate. nx=91}
 	\includegraphics[scale=0.8]{cfl_explode.png}
@@ -984,21 +985,21 @@ an intermediate step (figure \ref{fig:diff_1}) is shown before it ends up at fig
 \ref{fig:diff_final} after 50 timesteps. Large spatial grid (31 by 31) was chosen
 for visualization purposes. Script used: \texttt{diffusion\_2d.py}
 
-	\begin{figure}[diff_0]
+	\begin{figure}[H]
 	\centering
 	\caption{2-d diffusion: Initial condition}
 	\includegraphics[scale=0.8]{diff_0.png}
 	\label{fig:diff_0}
 	\end{figure}
 
-	\begin{figure}[diff_1]
+	\begin{figure}[H]
 	\centering
 	\caption{2-d diffusion: Intermediate step (10 steps later)}
 	\includegraphics[scale=0.8]{diff_1.png}
 	\label{fig:diff_1}
 	\end{figure}
 	
-	\begin{figure}[diff_final]
+	\begin{figure}[H]
 	\centering
 	\caption{2-d diffusion: Final step (50 steps after initial)}
 	\includegraphics[scale=0.8]{diff_final.png}
@@ -1012,24 +1013,42 @@ function in figure \ref{fig:burger_0} to become figure \ref{fig:burger_final} af
 155 timesteps. See code \texttt{burger\_driver}for velocity field inital values and other
 parameters.
 
-	\begin{figure}[burgers_0]
+	\begin{figure}[H]
 	\centering
 	\caption{Initial condition: 2-d hat on flat colourmap}
-	\includegraphics[scale=0.8]{burger_0.png}
+	\includegraphics[scale=0.7]{burger_0.png}
 	\label{fig:burger_0}
 	\end{figure}
 
-	\begin{figure}[burgers_final]
+	\begin{figure}[H]
 	\centering
-	\caption{Burgers equation: after 155 timesteps)}
-	\includegraphics[scale=0.8]{burger_final.png}
+	\caption{Burgers equation: after 155 timesteps}
+	\includegraphics[scale=0.7]{burger_final.png}
 	\label{fig:burger_final}
 	\end{figure}
 
-
-w/w/o shocks
 \subsubsection{Poisson}
+Figures \ref{fig:poisson_10} and \ref{fig:poisson_5000} show the effect of Poisson's
+equation in relaxing the initial conditions of a source and a sink. The code is directly
+adapted from the "12 Steps" in \texttt{13\_poisson.py}. See the change between 10 steps
+for relaxation and 5000 steps.
+
+	\begin{figure}[H]
+	\centering
+	\caption{Poisson equation on a spike and a sink: 10 iterations}
+	\includegraphics[scale=0.7]{poisson_10.png}
+	\label{fig:poisson_10}
+	\end{figure}
+	
+	\begin{figure}[H]
+	\centering
+	\caption{Poisson equation on a spike and a sink: 5000 iterations}
+	\includegraphics[scale=0.7]{poisson_5000.png}
+	\label{fig:poisson_5000}
+	\end{figure}
+	
 \subsubsection{Navier-Stokes cavity flow}
+
 \subsubsection{Navier-Stokes channel flow}
 
 
