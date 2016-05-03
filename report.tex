@@ -85,12 +85,9 @@ Fluid flow equations addressed:
 \item linear convection
 \item nonlinear convection
 \item diffusion
-\item Burgers equation (convection with diffusion
-\item Navier-Stokes (using solution to Poisson equation)
+\item Burgers equation (convection with diffusion)
+\item Navier-Stokes (cavity flow and channel flow conditions)
 \end{itemize}
-
-Changing the boundary conditions allows us to solve the Navier-Stokes equations
-for channel flow or cavity flow.
 
 
 \section{Physics}
@@ -361,9 +358,9 @@ derivative and in turn we use an approximation to that derivative by disregardin
 higher order terms.
 
 \subsubsection{Linear Convection: 1-d to 2-d}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% do I want to do some Taylor expanding here? Nice for my own %%%
-%%% reference but may not be necessary/good for report ---]%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% do I want to do some Taylor expanding here? Nice for my own reference  %%%
+%%% but may not be necessary/good for report. Nope: Hit page limit already %%%
 
 With forward difference on the time dependent term and backward difference on the second, Equation (\ref{1d_linconv}) becomes:
 
@@ -391,7 +388,7 @@ The subsequent models will be discretized in their 2-dimensional forms.
 But first, it would be helpful to address some constraints in using
 differencing methods in numerical schemes.
 
-\subsubsection{Precision and the CFL condition}
+\subsubsection{Accuracy and the CFL condition}
 When using these methods to compute solutions, there are sources of error that
 will alter the results. Awareness of these effects will help to interpret the results
 correctly. Firstly, there is the error introduced from the discretizations
@@ -421,7 +418,7 @@ against each other using
 \end{align}
 
 where $\sigma$ is the Courant number and the $u$ is the speed (non-negative).
-The constraint is called the Courant–Friedrichs–Lewy or CFL condition.
+The constraint is called the Courant-Friedrichs-Lewy or CFL condition.
 For explicit methods (as we have here), $\sigma$ should be less than 1.
 This will be a consideration for any of the convective flows in this project.
 Adding the condition to decide timesteps based on chosen gridspacing (or vice versa)
@@ -455,8 +452,8 @@ scheme will be used. A central difference is appropriate to the isotropic nature
 diffusion; the value at a particular point is subjected to the numerical influence of
 its neighbours in a manner that is independent of which direct the neighbour is.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% derive second order scheme here? %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% derive second order scheme here? Nope. Hitting the page limit already%%%
 
 So the discretization becomes:
 
@@ -489,15 +486,15 @@ from equations (\ref{2d_Burgers}) goes as expected from the the previous steps.
   + \left. \frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2} \right)	
 																		 \\
 \Rightarrow ~~ \nonumber \\
-&u^{n+1}_{i,j}
-	= u^n_{i,j}
+u^{n+1}_{i,j}
+	&= u^n_{i,j}
 	- \frac{u^n_{i,j} \Delta t}{\Delta x}(u^n_{i,j} - u^n_{i-1,j})
 	- \frac{v^n_{i,j} \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
 	+\nu \Delta t \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2} \right.
 	            + \left. \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)	
 																 \nonumber \\
-&v^{n+1}_{i,j}
-	= v^n_{i,j}
+v^{n+1}_{i,j}
+	&= v^n_{i,j}
 	- \frac{u^n_{i,j} \Delta t}{\Delta x}(v^n_{i,j} - v^n_{i-1,j})
 	- \frac{v^n_{i,j} \Delta t}{\Delta y}(v^n_{i,j} - v^n_{i,j-1})
 	+\nu \Delta t \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2} \right.
@@ -877,39 +874,66 @@ code vectorized the computations so that one of the nestings was eliminated and 
 runs faster (due to optimizations made by \texttt{numpy} which allow the array operations).
 
 \subsection{Alterations}
+Beyond the above, some changes and additions were made for this project.
 
-Beyond the above, I altered the code to retain solutions at each timestep. The original
+\subsubsection{Keeping solutions time-array}
+The code was altered to retain solutions at each timestep. The original
 code overwrote the previous steps and produced only the final result. Holding the
 intermediate solutions in an array (2-d for the 1-d spatial problems, 3-d for the
-2-d spatial ones) allowed revisiting interim steps and also animation of the results
+2-d spatial ones) allows revisiting interim steps and also animation of the results
 as they evolved over time.
 
+\subsubsection{Parametrization in functions}
 Each model had operations grouped by functions so that the code could be reused and
 would easier for reading and future modification in their modularized form. The functions
 were parametrized so that it is easier to change values (such as timesteps, or initial
-conditions) in one place (from the function caller) rather than having to modify it in
+conditions) in one place (from the caller of the function) rather than having to modify it in
 the body of the code, possibly in several places.
 
+\subsubsection{Visualization}
+One of the separated functions is for plotting. Having the entire set of solutions, any
+timestep can be plotted when provided as an input to the plot function. Alternatively,
+another function was made for animating the time evolution of the system with the option
+of visualization as a surface plot or a flat colourmap of values.
 
+\subsubsection{Further additions desired}
+Some planned extensions to the code would make future computations and visualizations
+run smoother: writing solutions to disk (small change) and functionality to read solutions
+from disk at a later time, better usability of animation functions --aim for ease of usage
+when changing platforms, ability to sample every $k$-th timestep of the solutions to
+quickly change granularity of animation (partially complete), saving the animations once
+complete (at debug stage), debugging the just-in-time compilation library so that the code
+could run faster for larger data sets, and potentially other changes that could optimize the
+runtime at the computational level.
 
-single plots vs animations,  sampling of solutions
-
+At the numerical level, some improvements might be gained by changing the discretization
+scheme. For example, it might be acceptable to use implicit methods in some cases, and thereby
+improve the stability of the problem. I suspect there may be some steps where programming
+language optimizations can be used with regards to sparse matrix computations, for example
+in using Poisson's equation. If it were valid to apply these methods for the physics of the
+system, the numerical scheme combined with language features could increase the accuracy and
+the speed of the computations.
 
 \subsection{Results}
 
-Show example figures for given initial / boundary conditions:
+Running code is available at at the repository for this project, the same code used for
+generating the results below. For each case here, particular initial conditions were specified
+and a selection of notable results are shown. For more detail, animation and full solutions
+using different parameters can be tested at https://github.com/cphl/cfd .
 
+
+\subsubsection{Convection}
 linear convection: note false diffusion caused by roundoff in computations
-
-nonlinear
-
-diffusion alone
-
-Burgers with and without shocks
-
 show artefacts from choosing bad timesteps
 
-channel flow
+\subsubsection{Nonlinear convection}
+\subsubsection{Diffusion}
+\subsubsection{Burgers}
+w/w/o shocks
+\subsubsection{Poisson}
+\subsubsection{Navier-Stokes cavity flow}
+\subsubsection{Navier-Stokes channel flow}
+
 
 %	\begin{figure}[qfc]
 %	\centering
