@@ -702,7 +702,7 @@ v^{n+1}_{i,j} = v^n_{i,j} + \Delta t \Biggl[
 	 \Biggr]
 \end{align}
 
-The Poisson equation (\ref{poisson_continuous_2-component}), discretizes as:
+The Poisson equation \eqref{poisson_continuous_2-component}, discretizes directly as:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% My derivation from the continuous Poisson, no extras: %%%
@@ -717,25 +717,28 @@ The Poisson equation (\ref{poisson_continuous_2-component}), discretizes as:
 	   \right] \\ \nonumber
 \Rightarrow ~~
 p_{i,j} = -\frac{1}{2(\Delta x^2 + \Delta y^2)} \cdot &
-	\\
+	\\ \nonumber
 	\lbrace&
-		\rho \left[ \frac{\Delta y^2}{4} (u_{i-1,j} - u_{i-1,j})
-					+ \frac{\Delta x \Delta y}{2} (v_{i+1,j} - v_{i-1,j})(u_{i,j+1} - u_{i,j-1})
-					+ \frac{\Delta x^2}{4} (v_{i-1,j} - v_{i-1,j})
-			 \right]
+		\rho \Biggl[ \frac{\Delta y^2}{4} (u_{i-1,j} - u_{i-1,j})
+			+ \frac{\Delta x \Delta y}{2} (v_{i+1,j} - v_{i-1,j})(u_{i,j+1} - u_{i,j-1})\\
+					&+ \frac{\Delta x^2}{4} (v_{i-1,j} - v_{i-1,j})
+			 \Biggr]
 			 												\nonumber \\
-		&+ \Delta y^2 (p_{i+1,j} + p_{i-1,j})
+		+& \Delta y^2 (p_{i+1,j} + p_{i-1,j})
 															\nonumber \\
-		&+ \Delta x^2 (p_{i,j+1} + p_{i,j-1})
-	\rbrace
+		+& \Delta x^2 (p_{i,j+1} + p_{i,j-1})
+	\rbrace \nonumber
 \end{align}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Continue with provided reference: the computation gives the cavity result. %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+However, when we discretize to solve for the problem of cavity flow, we do so iteratively
+using a pseudo time-step that eventually brings us to a steady state solution.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% This is following the reference, not sure how to explain appearance of time term. %%%
-%%% Possibly it's specified in the 'b' for this problem.                              %%%
+%%% Following the reference, not sure how to justify appearance of time term properly %%%
+%%% It's specified in the 'b' for this problem, in the discretized version only.      %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{align}
 &\frac{p_{i+1,j}^{n} - 2p_{i,j}^n + p_{i-1,j}^{n}}{\Delta x^2}
@@ -749,8 +752,8 @@ p_{i,j} = -\frac{1}{2(\Delta x^2 + \Delta y^2)} \cdot &
 	   -2\frac{u_{i,j+1} - u_{i,j-1}}{2\Delta y} \frac{v_{i+1,j} - v_{i-1,j}}{2\Delta x}
 	   - \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y} \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
 	   \right)
-\intertext{Solve for pressure at point $(i,j)$.}
-\intertext{All values are at "time step" $n$. The left-hand-side is equivalent to}
+\intertext{Solve for pressure at point $(i,j)$.
+All values are at "time step" $n$. The LHS is equivalent to}
 &\frac{\Delta y^2 p_{i+1,j} - 2\Delta y^2 p_{i,j} + \Delta y^2 p_{i-1,j}
 	 + \Delta x^2 p_{i,j+1} - 2\Delta x^2 p_{i,j} + \Delta x^2 p_{i,j-1}}
       {\Delta x^2\Delta y^2}										\nonumber \\
@@ -795,14 +798,33 @@ p_{i,j} &= \frac{-\Delta x^2\Delta y^2}{2 (\Delta y^2 +\Delta x^2)} \Biggl[
 
 
 \subsubsection{Modelling channel flow}
-Pressure-driven
+To model channel flow, there is an added source term for one of the components. It acts
+as a pressure gradient in one direction to simulate flow in a channel along that axis.
+Selecting the direction of the flow to be along the $x$-component, the $u$-momentum
+expression gets the extra source term $F$. So \eqref{component-1_consmom} becomes
 
-...
+\begin{align}
+\D[u]{t} + u \D[u]{x} + v \D[u]{y}
+	= \frac{1}{\rho} \D[p]{x} + \nu \left(\D[^2u]{x^2} + \D[^u]{y^2} \right) + F
+\end{align}
 
-Added source term
+while the $v$-momentum expression is unchanged. (We could have chosen to swap the axes.)
+The Poisson expression is the same as in the cavity flow case. Discretizations for the
+latter two expressions will be the same as the previous simulation. The discretization
+for the $u$-momentum becomes
 
-...
+\begin{align}
+u^{n+1}_{i,j} = u^n_{i,j} + \Delta t \Biggl[
+	&- \frac{1}{\rho}  \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta x}
+	- u^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta x}%
+	- v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} 			\nonumber \\
+	&+ \nu \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2}
+	+ \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right) \nonumber \\
+	&+ F
+	 \Biggr]
+\end{align}
 
+so there is an addition amount $F\Delta t$ for the $u$-velocity every time step.
 
 \subsection{CFL condition}
 choosing constant for CFL, motivation
