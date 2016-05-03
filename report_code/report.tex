@@ -420,7 +420,8 @@ against each other using
 where $\sigma$ is the Courant number and the $u$ is the speed (non-negative).
 The constraint is called the Courant-Friedrichs-Lewy or CFL condition.
 For explicit methods (as we have here), $\sigma$ should be less than 1.
-This will be a consideration for any of the convective flows in this project.
+This will be a consideration for any part of this project where values may change faster
+than the timestep is able to show so it will be in effect at any point onward from here.
 Adding the condition to decide timesteps based on chosen gridspacing (or vice versa)
 will prevent these undesired artefacts from appearing.
 
@@ -919,7 +920,10 @@ the speed of the computations.
 Running code is available at at the repository for this project, the same code used for
 generating the results below. For each case here, particular initial conditions were specified
 and a selection of notable results are shown. For more detail, animation and full solutions
-using different parameters can be tested at https://github.com/cphl/cfd .
+using different parameters can be tested at https://github.com/cphl/cfd the code that is
+frozen for the purpose of reference of the generated plots is stored in the folder 
+\texttt{report\_code} but the files outside of that folder have functionality beyond
+plotting stills for this report.
 
 
 \subsubsection{Linear Convection}\label{cfl+friends}
@@ -936,6 +940,9 @@ $\texttt{01-1\_}$\texttt{linconv.py}.
 	\label{fig:num_diff}
 	\end{figure}
 
+Figure \ref{fig:num_diff_fine_mesh} shows that making a finer spatial grid reduces the
+numerical diffusion and it retains more of the initial condition's hat shape.
+
 	\begin{figure}[num_diff_fine_mesh]
 	\centering
 	\caption{1-d linear convection only. Less false diffusion. Number of grid points nx=71}
@@ -950,6 +957,12 @@ $\texttt{01-1\_}$\texttt{linconv.py}.
 	\label{fig:num_diff_finest_mesh}
 	\end{figure}
 
+In figure \ref{fig:num_diff_finest_mesh} it appears that the hat has been retained by selecting
+a fine mesh consisting of 81 points along the $x$-axis, but as soon as this is increased to
+83 points, we see the artefacts that arise from not being constrained by the CFL condition
+(figure \ref{fig:num_diff_too_fine}) and these effect grow quickly with the addition of only
+a few more points to the spatial grid as seen in figure \ref{fig:num_diff_too_fine_explode}.
+
 	\begin{figure}[num_diff_too_fine]
 	\centering
 	\caption{1-d linear convection only. CFL condition broken. Number of grid points nx=83}
@@ -957,10 +970,42 @@ $\texttt{01-1\_}$\texttt{linconv.py}.
 	\label{fig:num_diff_too_fine}
 	\end{figure}
 
+	\begin{figure}[num_diff_too_fine_explode]
+	\centering
+	\caption{1-d linear convection only. Numerical artefacts dominate. nx=91}
+	\includegraphics[scale=0.8]{cfl_explode.png}
+	\label{fig:num_diff_too_fine_explode}
+	\end{figure}
 
-
-\subsubsection{Nonlinear convection}
 \subsubsection{Diffusion}
+Moving into two dimensions. Here are some plots showing true physical diffusion.
+The initial condition is a 2-d hat function shown in the first figure (\ref{fig:diff_0}),
+an intermediate step (figure \ref{fig:diff_1}) is shown before it ends up at figure
+\ref{fig:diff_final} after 50 timesteps. Large spatial grid (31 by 31) was chosen
+for visualization purposes. Script used: \texttt{diffusion\_2d.py}
+
+	\begin{figure}[diff_0]
+	\centering
+	\caption{2-d diffusion: Initial condition}
+	\includegraphics[scale=0.8]{diff_0.png}
+	\label{fig:diff_0}
+	\end{figure}
+
+	\begin{figure}[diff_1]
+	\centering
+	\caption{2-d diffusion: Intermediate step (10 steps later)}
+	\includegraphics[scale=0.8]{diff_1.png}
+	\label{fig:diff_1}
+	\end{figure}
+	
+	\begin{figure}[diff_final]
+	\centering
+	\caption{2-d diffusion: Final step (50 steps after initial)}
+	\includegraphics[scale=0.8]{diff_final.png}
+	\label{fig:diff_final}
+	\end{figure}
+
+
 \subsubsection{Burgers}
 w/w/o shocks
 \subsubsection{Poisson}
