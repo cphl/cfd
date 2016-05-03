@@ -1048,11 +1048,47 @@ for relaxation and 5000 steps.
 	\end{figure}
 	
 \subsubsection{Navier-Stokes cavity flow}
+The next two scripts \texttt{ns\_cavity.py} and \texttt{ns\_channel} are directly from
+the "12 Steps" notes with minor modifications to work with current libraries and some
+adjustments made to parameters. Otherwise it follows directly from the numerical schemes
+but with auxiliary variables to hold temporary values instead of having to calculate
+it in long expressions that are prone to typing transcription errors.
 
-\subsubsection{Navier-Stokes channel flow}
+Cavity flow has a the external velocity on the top boundary (figure \ref{fig:cavity}).
+This boundary condition is reset at every iteration while the inside of the field
+changes with each iteration (until steady state). Figure \ref{fig:cavity_0ish} shows
+the system near initial condition, far from steady state. Then \ref{fig:cavity_med}
+shows in interim point, and \ref{fig:cavity_final0} and \ref{fig:cavity_final} show
+that we are near steady state.
+	\begin{figure}[H]
+	\centering
+	\caption{Navier-Stokes cavity flow: shows top boundary condition velocity, 20 iterations}
+	\includegraphics[scale=0.57]{cavity_0ish.png}
+	\label{fig:cavity_0ish}
+	\end{figure}
 
+	\begin{figure}[H]
+	\centering
+	\caption{Navier-Stokes cavity flow: far from steady state, after 80 iterations}
+	\includegraphics[scale=0.57]{cavity_med.png}
+	\label{fig:cavity_med}
+	\end{figure}
 
+	\begin{figure}[H]
+	\centering
+	\caption{Navier-Stokes cavity flow: near steady state, 500 iterations}
+	\includegraphics[scale=0.57]{cavity_final0.png}
+	\label{fig:cavity_final0}
+	\end{figure}
 
+	\begin{figure}[H]
+	\centering
+	\caption{Navier-Stokes cavity flow: near steady state, 700 interations, compare to previous}
+	\includegraphics[scale=0.57]{cavity_final.png}
+	\label{fig:cavity_final}
+	\end{figure}
+
+\subsubsection{Navier-Stokes: channel flow}
 
 \section*{References}
 
