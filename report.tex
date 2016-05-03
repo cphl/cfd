@@ -326,10 +326,10 @@ for Navier-Stokes. (When RHS is 0, it is the Laplace equation.) $f$ is the
 function such that pressure satisfies the Poisson equation.
 
 
-\section{Numerical considerations}
+\section{Numerical schemes and considerations}
 
 In some simpler cases, the discretization of the above continuous equations can
-be a straightforward translation. In general, these differencing schemes are used
+be a straightforward translation. In general, the following differencing schemes are used
 for this project:
 
 \begin{itemize}
@@ -361,9 +361,9 @@ derivative and in turn we use an approximation to that derivative by disregardin
 higher order terms.
 
 \subsubsection{Linear Convection: 1-d to 2-d}
-
-[--- do I want to do some Taylor expanding here? Nice for my own
-reference but may not be necessary/good for report ---]%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% do I want to do some Taylor expanding here? Nice for my own %%%
+%%% reference but may not be necessary/good for report ---]%%%%%%%%
 
 With forward difference on the time dependent term and backward difference on the second, Equation (\ref{1d_linconv}) becomes:
 
@@ -387,25 +387,84 @@ From (\ref{2d_linconv}) or above (\ref{discrete_1d_linconv}), we get:
 				- \frac{c \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
 \end{align}
 
-The subsequent models will be discretized in their 2-dimensional form.
+The subsequent models will be discretized in their 2-dimensional forms.
 
 \subsubsection{Nonlinear convection}
-As with equations (\ref{2d_nonlinconv}), we need to handle non-constant velocity fields
-$u$ and $v$.
+As with equations in (\ref{2d_nonlinconv}), we need to handle non-constant velocity
+fields $u$ and $v$.
 
 \begin{align}
 &\frac{u^{n+1}_{i,j} - u^{n}_{i,j}}{\Delta t}
-	+ u^{n}_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i-1,j}}{\Delta x}
-	+ v^{n}_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i,j-1}}{\Delta y} = 0 \nonumber \\
+	+ u^n_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i-1,j}}{\Delta x}
+	+ v^n_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i,j-1}}{\Delta y} = 0	\nonumber \\
 &\frac{v^{n+1}_{i,j} - v^{n}_{i,j}}{\Delta t}
-	+ u^{n}_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i-1,j}}{\Delta x}
-	+ v^{n}_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i,j-1}}{\Delta y} = 0 \\
+	+ u^n_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i-1,j}}{\Delta x}
+	+ v^n_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i,j-1}}{\Delta y} = 0 \\
 \Rightarrow ~~ \nonumber \\
 &u^{n+1}_{i,j} = u^n_{i,j}
-				- \frac{c \Delta t}{\Delta x}(u^n_{i,j} - u^n_{i-1,j})
-				- \frac{c \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
+				- \frac{u^n_{i,j} \Delta t}{\Delta x}(u^n_{i,j} - u^n_{i-1,j})
+				- \frac{v^n_{i,j} \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
+																 \nonumber \\
+&v^{n+1}_{i,j} = v^n_{i,j}
+				- \frac{u^n_{i,j} \Delta t}{\Delta x}(v^n_{i,j} - v^n_{i-1,j})
+				- \frac{v^n_{i,j} \Delta t}{\Delta y}(v^n_{i,j} - v^n_{i,j-1})
 \end{align}
 
+\subsubsection{Diffusion}
+This is diffusion without convection from equation (\ref{2d_diffusion}).
+This has second-order partial derivatives in the spatial components so a second-order
+scheme will be used. A central difference is appropriate to the isotropic nature of
+diffusion; the value at a particular point is subjected to the numerical influence of
+its neighbours in a manner that is independent of which direct the neighbour is.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% derive second order scheme here? %%%
+
+So the discretization becomes:
+
+\begin{align}
+&\frac{u^{n+1}_{i,j} - u^{n}_{i,j}}{\Delta t} = \nu
+	\left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2} \right.
+  + \left. \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)		\\
+\Rightarrow~~
+&u^{n+1}_{i,j} = u^n_{i,j}
+			+ \frac{\nu \Delta t}{\Delta x} (u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j})
+			+ \frac{\nu \Delta t}{\Delta y} (u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1})
+\end{align}
+
+\subsubsection{Burgers' Equation}
+This handles nonlinear convective flow with diffusion simultaneously. Discretizing
+from equations (\ref{2d_Burgers}) goes as expected from the the previous steps.
+
+\begin{align}
+&\frac{u^{n+1}_{i,j} - u^{n}_{i,j}}{\Delta t}
+	+ u^n_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i-1,j}}{\Delta x}
+	+ v^n_{i,j} \frac{u^{n}_{i,j} - u^{n}_{i,j-1}}{\Delta y}
+=\nu	\left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2} \right.
+  + \left. \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)	
+																	\nonumber \\
+&\frac{v^{n+1}_{i,j} - v^{n}_{i,j}}{\Delta t}
+	+ u^n_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i-1,j}}{\Delta x}
+	+ v^n_{i,j} \frac{v^{n}_{i,j} - v^{n}_{i,j-1}}{\Delta y}
+=\nu
+	\left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2} \right.
+  + \left. \frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2} \right)	
+																		 \\
+\Rightarrow ~~ \nonumber \\
+&u^{n+1}_{i,j}
+	= u^n_{i,j}
+	- \frac{u^n_{i,j} \Delta t}{\Delta x}(u^n_{i,j} - u^n_{i-1,j})
+	- \frac{v^n_{i,j} \Delta t}{\Delta y}(u^n_{i,j} - u^n_{i,j-1})
+	+\nu \Delta t \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2} \right.
+	            + \left. \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)	
+																 \nonumber \\
+&v^{n+1}_{i,j}
+	= v^n_{i,j}
+	- \frac{u^n_{i,j} \Delta t}{\Delta x}(v^n_{i,j} - v^n_{i-1,j})
+	- \frac{v^n_{i,j} \Delta t}{\Delta y}(v^n_{i,j} - v^n_{i,j-1})
+	+\nu \Delta t \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2} \right.
+			   + \left. \frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2} \right)	
+\end{align}
 
 \subsection{Navier-Stokes}
 At this point, some of the expressions that we have in the continuous case do not work so well
@@ -418,7 +477,7 @@ but then before considering the step complete, do an intermediate calculation fo
 being zero, thereby preserving continuity (conservation of mass), and only then complete that
 iteration.
 
-\subsection{Discretizing the momentum equation}
+\subsubsection{Discretizing the momentum equation}
 First, we examine how the problem of non-zero divergence of velocity may arise when we
 discretize the equation of motion (\ref{consmom}) keeping it in vector form.
 
@@ -440,23 +499,19 @@ here $\nabla \cdot$(\ref{discrete_mom}).
 			      - \frac{1}{\rho} \nabla^2 p - \nu \nabla (\nabla^2 \cdot \vec{u}^n) \right]
 \label{diverged_mom}
 \end{align}
-[--- ... major editing needed ... ---]
-
+%%%%%%%%%%%% proofread, this still feels weird %%%%%%%%%%%%%%%%%%%%%%%%%
 To satisfy continuity (\ref{continuity}), the divergence of the velocity (vector) should
-be zero, that is, $\nabla \cdot \vec{u}^{n+1}=0$, however it is
-possible that $\nabla \cdot \vec{u}^n \neq 0$ due to numerical errors. Because of this,
-the discretized version cannot simply have $\nabla \cdot \vec{u}^n$ cancelled out at
-every occurrence above. To resolve this problem, the momentum equation and the Poisson
-equation are both solved within one iterative step. When solving Poisson, force divergence
-to be zero in order to have a corrected value for velocity, then use that in the other
-equation. Alternating between the two approximates simultaneous satisfaction of both
-equations. "The velocity field created by the Navier-Stokes equations is not completely
-divergence free in the numericall approach. Think of it as an intermediate step."
-We get some velocity (field) from N-S, but it's divergence is not zero. So we need to
-compute pressure such that continuity is satisfied. Then use the intermediate step's velocity
-field solution in the poisson equation
+be zero, that is, $\nabla \cdot \vec{u}^{n+1}=0$, however it is possible that $\nabla \cdot \vec{u}^n \neq 0$ due to numerical errors during computation of the velocity field for
+Navier-Stokes during the previous step. Because of this, the discretized version cannot simply
+have $\nabla \cdot \vec{u}^n$ cancelled out at every occurrence above as we did for the
+non-discretized case. So compute pressure such that (\ref{continuity}) is satisfied.
+Then use that intermediate step's velocity field solution in the Poisson equation.
+The momentum equation and the Poisson equation are both solved within one iterative step.
+When solving Poisson, force divergence to be zero in order to have a corrected value for
+velocity, then use that vakue for the momentum. Alternating between the two approximates
+simultaneous satisfaction of both equations.
 
-\subsection{Solving discrete Poisson}
+\subsubsection{Solving discrete Poisson}
 Recall that Poisson has the form (\ref{poisson}), so rearrange (\ref{diverged_mom})
 accordingly (with its LHS=0 since we must have that $\vec{u}^{n+1} = 0$ for continuity
 to be satisfied).
@@ -476,8 +531,6 @@ to be satisfied).
 \end{align}
 
 This is the equation that needs to be solved next.
-
-[-----... fix ordering ... ---]
 
 To aid in developing a numerical setup for complete Navier-Stokes, we start with some simpler
 cases to build up smaller pieces of code. We begin with Laplace's equation and progress to
@@ -524,10 +577,7 @@ The next step is to isolate $p_{i,j}$, the value solved on each iteration.
 p_{i,j} = \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
 			 {2(\Delta x^2 + \Delta y^2)}
 	\\ \nonumber \\
-\text{To simplify the formula, we}&
-\text{ can choose the same grid spacing in both directions.~~~~~~~~~~~~~~~~~~~~~}\nonumber\\
-\text{i.e. let } \Delta x = \Delta y ~~~~~~~~~~~~~~&
-	\nonumber \\
+\intertext{To simplify the formula, we can choose the same grid spacing in both directions, i.e. let $\Delta x = \Delta y$}
 \Rightarrow ~~&
 p_{i,j} = \frac{\Delta x^2 (p_{i+1,j} + p_{i-1,j}) + \Delta x^2 (p_{i,j+1} + p_{i,j-1})}
 			 {2(\Delta x^2 + \Delta x^2)}
@@ -553,15 +603,15 @@ to approximating the solution for true $x$. At the next iteration, those solutio
 The process repeats until subsequent solutions stop changing by some chosen tolerance.
 This process can be accelerated by using most-recently calculated $x_i$ values from
 within the same iteration. This is the Gauss-Seidel method. The values converge faster since
-the more accurate values are being used as early as possible.
+the more accurate values are being used as early as possible. A further improvement would
+be to use successive over-relaxation.
 
 \subsubsection{Poisson}
 The Laplace equation from above could be seen as a simplified version of what we do now.
 The Poisson equation has a source term $b$ on the right-hand-side.
-The Poission equation is required to fully represent the effect of pressure in
-the Navier-Stokes equations. Compare to the Laplace equation (\ref{laplace}).
-Poisson relaxes initial sources in the field.
-[... that's weird wording... fix it...]
+(Compare to the Laplace equation (\ref{laplace}).)
+The Poisson equation is required to fully represent the effect of pressure in
+the Navier-Stokes equations, and it has the effect of relaxing initial sources in the field.
 
 \begin{align}
 \frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y} &= b
@@ -603,74 +653,59 @@ For a fine grid, the pressure decrease is less for a given point (but there are 
 nearby to be affected by this smaller influence also).
 The magnitude of relaxation decreases with each iteration as the pressure values become closer
 to the source values, smoothed over differences in neighbouring points.
+(See this relaxation effect graphically in the results section(\ref{plot_poisson}).)
 
 
-\subsection{Simulating different types of flows}
-With different conditions, we can model different types of flow using the Navier-Stokes equations.
+\subsubsection{Modelling cavity flow}
+With different boundary conditions, we can model different types of flow using the
+Navier-Stokes equations.
 
-\subsubsection{Cavity flow}
 We have equations for motion (\ref{component-1_consmom}) and (\ref{component-2_consmom})
 and one for pressure (\ref{poisson_continuous_2-component}) from before. Now we use their
-discretized forms.
-
-Start with (\ref{component-1_consmom}), for $u$-momentum. Use forward difference in time,
-backward difference for convective terms, and second-order central difference for diffusive terms.
+discretized forms. Start with (\ref{component-1_consmom}), for $u$-momentum. Use forward
+difference in time, backward difference for convective terms, and second-order central
+difference for diffusive terms.
 
 \begin{align}
 \frac{u^{n+1}_{i,j}-u^n_{i,j}}{\Delta t}
 	 &+ u^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta x}
-	  + v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} \nonumber\\
+	  + v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} 			\nonumber\\
 	&= -\frac{1}{\rho} \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta x}
 	  + \nu \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2}
 	  + \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)
-												\nonumber
-\intertext{Isolate $u^{n+1}_{i,j}$ to the LHS.}	\nonumber
+																\nonumber
+\intertext{Isolate $u^{n+1}_{i,j}$ to the LHS.}					\nonumber
 u^{n+1}_{i,j} = u^n_{i,j} + \Delta t \Biggl[
 	&- \frac{1}{\rho}  \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta x}
 	- u^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta x}%
-	- v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} \nonumber \\
+	- v^n_{i,j} \frac{u^n_{i,j}-u^n_{i-1,j}}{\Delta y} 			\nonumber \\
 	&+ \nu \left( \frac{u^n_{i+1,j} - 2u^n_{i,j} + u^n_{i-1,j}}{\Delta x^2}
 	+ \frac{u^n_{i,j+1} - 2u^n_{i,j} + u^n_{i,j-1}}{\Delta y^2} \right)
 	 \Biggr]
 \intertext{Likewise, for $v$.}
-												\nonumber
+																\nonumber
 \frac{v^{n+1}_{i,j}-v^n_{i,j}}{\Delta t}
 	 &+ u^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta x}
-	  + v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} \nonumber\\
+	  + v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} 			\nonumber\\
 	&= -\frac{1}{\rho} \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta y}
 	  + \nu \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2}
 	  + \frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2} \right)
-															\nonumber \\
+																\nonumber \\
 \intertext{$\Rightarrow$} \nonumber
 v^{n+1}_{i,j} = v^n_{i,j} + \Delta t \Biggl[
 	&- \frac{1}{\rho}  \frac{p_{i+1,j}-p_{i-1,j}}{2 \Delta y}
 	- u^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta x}%
-	- v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} \nonumber \\
+	- v^n_{i,j} \frac{v^n_{i,j}-v^n_{i-1,j}}{\Delta y} 			\nonumber \\
 	&+ \nu \left( \frac{v^n_{i+1,j} - 2v^n_{i,j} + v^n_{i-1,j}}{\Delta x^2}
 				+\frac{v^n_{i,j+1} - 2v^n_{i,j} + v^n_{i,j-1}}{\Delta y^2}
 		   \right)
 	 \Biggr]
 \end{align}
 
-The Poisson equation (\ref{poisson_continuous_2-component}) discretizes as:
-%%%%%%%%%%%% check this over %%%%%%%%%%%
+The Poisson equation (\ref{poisson_continuous_2-component}), discretizes as:
 
-This is the reference, which has the time term, not sure where it came from...
-\begin{align}
-\frac{p_{i+1,j}^{n} - 2p_{i,j}^n + p_{i-1,j}^{n}}{\Delta x^2} &
-	 + \frac{p_{i,j+1}^n - 2p_{i,j}^n + p_{i,j-1}^n}{\Delta y^2} \nonumber \\ \nonumber
-&	= \frac{\rho}{\Delta t}
-	   \left( \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} + \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
-	   \right)
-	   + \rho
-	   \left(
-	   - \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x}
-	   -2\frac{u_{i,j+1} - u_{i,j-1}}{2\Delta y} \frac{v_{i+1,j} - v_{i-1,j}}{2\Delta x}
-	   - \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y} \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
-	   \right)
-\end{align}
-
-This is my derivation from the continuous Poisson:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% My derivation from the continuous Poisson, no extras: %%%
 \begin{align}
 \frac{p_{i+1,j}^{n} - 2p_{i,j}^n + p_{i-1,j}^{n}}{\Delta x^2} &
 	 + \frac{p_{i,j+1}^n - 2p_{i,j}^n + p_{i,j-1}^n}{\Delta y^2} \nonumber \\ \nonumber
@@ -694,11 +729,72 @@ p_{i,j} = -\frac{1}{2(\Delta x^2 + \Delta y^2)} \cdot &
 		&+ \Delta x^2 (p_{i,j+1} + p_{i,j-1})
 	\rbrace
 \end{align}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Continue with provided reference: the computation gives the cavity result. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-But for now, continue with the reference because it works with the computation.
-So isolate pressure at next "time step" on the LHS.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% This is following the reference, not sure how to explain appearance of time term. %%%
+%%% Possibly it's specified in the 'b' for this problem.                              %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{align}
+&\frac{p_{i+1,j}^{n} - 2p_{i,j}^n + p_{i-1,j}^{n}}{\Delta x^2}
+	 + \frac{p_{i,j+1}^n - 2p_{i,j}^n + p_{i,j-1}^n}{\Delta y^2}	\nonumber \\ \nonumber
+	&= \frac{\rho}{\Delta t}
+	   \left( \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} + \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
+	   \right)													\nonumber \\
+	 &~ + \rho
+	   \left(
+	   - \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x}
+	   -2\frac{u_{i,j+1} - u_{i,j-1}}{2\Delta y} \frac{v_{i+1,j} - v_{i-1,j}}{2\Delta x}
+	   - \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y} \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
+	   \right)
+\intertext{Solve for pressure at point $(i,j)$.}
+\intertext{All values are at "time step" $n$. The left-hand-side is equivalent to}
+&\frac{\Delta y^2 p_{i+1,j} - 2\Delta y^2 p_{i,j} + \Delta y^2 p_{i-1,j}
+	 + \Delta x^2 p_{i,j+1} - 2\Delta x^2 p_{i,j} + \Delta x^2 p_{i,j-1}}
+      {\Delta x^2\Delta y^2}										\nonumber \\
+&\Leftrightarrow
+\frac{- 2\Delta y^2 p_{i,j} - 2\Delta x^2 p_{i,j}}{\Delta x^2\Delta y^2}
+	+ \frac{\Delta y^2 p_{i+1,j} + \Delta y^2 p_{i-1,j}
+		   +\Delta x^2 p_{i,j+1} + \Delta x^2 p_{i,j-1}}
+		  {\Delta x^2\Delta y^2}									\nonumber \\
+&\Leftrightarrow
+p_{i,j}\frac{2 (-\Delta y^2 -\Delta x^2)}{\Delta x^2\Delta y^2}
+	+ \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j})
+		   +\Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+		  {\Delta x^2\Delta y^2}									\nonumber \\
+\intertext{Now the whole expression with $p_{i,j}$ isolated on the LHS is the following:}
+p_{i,j} &= \frac{-\Delta x^2\Delta y^2}{2 (\Delta y^2 +\Delta x^2)} \Biggl[
+	 \frac{\rho}{\Delta t}
+	   \left( \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} + \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
+	   \right)													\nonumber \\
+	 &~ + \rho
+	   \left(
+	   - \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x}
+	   -2\frac{u_{i,j+1} - u_{i,j-1}}{2\Delta y} \frac{v_{i+1,j} - v_{i-1,j}}{2\Delta x}
+	   - \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y} \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
+	   \right)													\nonumber \\
+	 &~ - \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j})
+		  	  +\Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+		  {\Delta x^2\Delta y^2} \Biggr]
+																\nonumber \\ \nonumber\\
+&= \frac{-\Delta x^2\Delta y^2 \rho}{2 (\Delta y^2 +\Delta x^2)} \Biggl[
+	 \frac{1}{\Delta t}
+	   \left( \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} + \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
+	   \right)													\nonumber \\
+	 &~
+	   - \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x} \frac{u_{i+1,j} - u_{i-1,j}}{2\Delta x}
+	   -2\frac{u_{i,j+1} - u_{i,j-1}}{2\Delta y} \frac{v_{i+1,j} - v_{i-1,j}}{2\Delta x}
+	   - \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y} \frac{v_{i,j+1} - v_{i,j-1}}{2\Delta y}
+								 \Biggr]							\nonumber \\
+	 &~ + \frac{\Delta y^2 (p_{i+1,j} + p_{i-1,j})
+		  	  +\Delta x^2 (p_{i,j+1} + p_{i,j-1})}
+		  	  {2 (\Delta y^2 +\Delta x^2)}
+\end{align}
 
-\subsubsection{Channel flow}
+
+\subsubsection{Modelling channel flow}
 Pressure-driven
 
 ...
@@ -708,33 +804,10 @@ Added source term
 ...
 
 
-\subsection{Preparing discretized computation}
-
-Describe general strategy used for all
-
-Do whole process for each one? Or do one and show only results for rest?
-
-\textbf{Considering} want to show forward, backward and central difference:
-
-Do a most simple one in 1-d
-
-and then 2d Burgers
-
-then 2d pressure ones
-
-\begin{enumerate}[(A)]
-\item Discretize
-
-[..]
-
-\item Transpose
-
-[..]
-
 \subsection{CFL condition}
 choosing constant for CFL, motivation
+[... move this up when we're doing Burgers near ...]
 
-\end{enumerate}
 
 \section{Coding strategy}
 
@@ -754,7 +827,7 @@ vectorization to remove nested loop
 
 \subsection{Results}
 
-Show example figures:
+Show example figures for given initial / boundary conditions:
 
 linear convection: note false diffusion caused by roundoff in computations
 
