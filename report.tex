@@ -866,18 +866,33 @@ so there is an addition amount $F\Delta t$ for the $u$-velocity every time step.
 
 \section{Coding strategy}
 
-storage of solutions at each time step
+The coding followed very closely the approach used by the online CFD course material
+from Professor Barba. A few alterations were made to the style and output, but the
+computations shadow the numerical methods above so the logic remains largely the same.
+What remains in common is that the language used is Python, using common modules
+\texttt{numpy} and \texttt{matplotlib}. While exploring the computations, the code
+began in nested loop format, the inner loops calculating the values for each spatial
+position within that timestep, the outer loops completing once per timestep. Final
+code vectorized the computations so that one of the nestings was eliminated and it
+runs faster (due to optimizations made by \texttt{numpy} which allow the array operations).
 
-sampling of solutions
+\subsection{Alterations}
 
-single plots vs animations
+Beyond the above, I altered the code to retain solutions at each timestep. The original
+code overwrote the previous steps and produced only the final result. Holding the
+intermediate solutions in an array (2-d for the 1-d spatial problems, 3-d for the
+2-d spatial ones) allowed revisiting interim steps and also animation of the results
+as they evolved over time.
 
-\subsection{Optimizations}
+Each model had operations grouped by functions so that the code could be reused and
+would easier for reading and future modification in their modularized form. The functions
+were parametrized so that it is easier to change values (such as timesteps, or initial
+conditions) in one place (from the function caller) rather than having to modify it in
+the body of the code, possibly in several places.
 
-modularizing with parametrized functions
 
-vectorization to remove nested loop
 
+single plots vs animations,  sampling of solutions
 
 
 \subsection{Results}
