@@ -49,13 +49,13 @@ def animate_it(u_soln, v_soln, style="surface", stride=1):
     ys = np.linspace(0, 2, ny)  # min, max, ny
 
     X, Y = np.meshgrid(xs, ys)
-    if style == "wireframe":
-        wframe = ax.plot_wireframe([], [], [], lw=1)
-
-    if style == "surface":
-        surf = ax.plot_surface([], [], [])
-    if style == "flat":
-        colourmap = plt.pcolormesh(X, Y, v_soln[:, :, 0])
+#    if style == "wireframe":
+#        wframe = ax.plot_wireframe([], [], [], lw=1)
+#
+#    if style == "surface":
+    surf = ax.plot_surface([], [], [])
+#    if style == "flat":
+#        colourmap = plt.pcolormesh(X, Y, v_soln[:, :, 0])
 
     ax.set_zlim(0, 5)  # TODO might want to let this go unconstrained
 
@@ -63,21 +63,21 @@ def animate_it(u_soln, v_soln, style="surface", stride=1):
         ax.cla()  # <-- maybe this is what could go in an init function?
         ax.set_zlim(0, 5)  # TODO free these hardcoded numbers
 
-        if style == "wireframe":
-            wframe = ax.plot_wireframe(X, Y, v_soln[:, :, t],
-                                       rstride=2, cstride=2)
-            return wframe,
-
-        if style == "surface":
-            surf = ax.plot_surface(X, Y, v_soln[:, :, t],
-                                   rstride=6, cstride=6, cmap=cm.gist_heat)
-            return surf,
-
-        if style == "flat":
-            colourmap = plt.pcolormesh(X, Y, v_soln[:, :, t],
-                                          rstride=1,
-                                          cmap=cm.gist_heat)
-            return colourmap,
+#        if style == "wireframe":
+#            wframe = ax.plot_wireframe(X, Y, v_soln[:, :, t],
+#                                       rstride=2, cstride=2)
+#            return wframe,
+#
+#        if style == "surface":
+        surf = ax.plot_surface(X, Y, v_soln[:, :, t],
+                               rstride=6, cstride=6, cmap=cm.gist_heat)
+        return surf,
+#
+#        if style == "flat":
+#            colourmap = plt.pcolormesh(X, Y, v_soln[:, :, t],
+#                                          rstride=1,
+#                                          cmap=cm.gist_heat)
+#            return colourmap,
 
     ani = animation.FuncAnimation(fig, update,
                                   frames=nt,  # was frames=xrange(100)
@@ -86,7 +86,7 @@ def animate_it(u_soln, v_soln, style="surface", stride=1):
 # TODO: fix colourmap style
     plt.show(block=False)
 #    plt.colorbar()
-
+animate_2d_by_t.animate_it(u_soln, v_soln)
 # TODO: add option to sample from provided array, important for high timesteps
 # Use something like solutions[::stride_length, :]
 # TODO: not sure best place to filter this out
