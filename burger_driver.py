@@ -3,6 +3,12 @@
 Burger driver
 Use this to call the solver and plotting functions
 Vary input parameters including initial conditions here
+NOTE: animation requires (in Spyder) the backend to run animation in the
+      IPython console. Either do `%matplotlib qt` or change the setting:
+      Tools > Preferences > IPython Console > Graphics > Backend
+      from "Inline" to "Automatic"
+      *** Still not working, but reverting to known working commit froze also
+      but other animation examples working, so: not an env problem
 @author: cepuuher
 """
 from __future__ import division
@@ -22,7 +28,7 @@ nx = 61
 ny = 61
 nt = 800  # start smaller while creating 3d arrays to hold all solutions
 sigma = 0.0009
-nu = 0.0004  # TODO: find different nu that will cause effects. Original: 0.01, 0.001 to 0.0004 looks smooth with rising edges, 0.0003 causes problems
+nu = 0.001  # TODO: find different nu that will cause effects. Original: 0.01, 0.001 to 0.0004 looks smooth with rising edges, 0.0003 causes problems
 area = [3, 2]  # original was 2 x 2
 
 # Hat function (for initial condition), original given:
@@ -70,7 +76,7 @@ u_soln, v_soln = bgr.solve_burgers(u0a, v0a, area, nx, ny, nt, sigma, nu)
 
 # plot surface: helpful if a feature is too skinny in one dimension
 if plot_surface:
-    bgr.plot2D(u_soln, v_soln, -1)  # -1 gives the final time
+    bgr.plot2D(u_soln, v_soln, 50)  # -1 gives the final time
     pyplot.show(block=False)
 
 # plot flat with colourmap
@@ -82,7 +88,7 @@ if plot_flat:
 
 #TODO: write a simple_animate for surfaces and/or 2D-colourmap
 if animate:
-    animate_2d_by_t.animate_it(u_soln, v_soln)#, style="flat")
+    animate_2d_by_t.animate_it(u_soln, v_soln)  # , style="flat")
     pyplot.show()
 
 # TODO: figure out why this doesn't run from terminal i/python burger_driver.py

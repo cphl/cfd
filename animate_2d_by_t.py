@@ -4,6 +4,12 @@ Animate surface plots.
 Take in a 3d array: 2d solutions changing with time
 Option to plot as surface or to show colourmap for values in flat xy
 
+NOTE: animation requires (in Spyder) the backend to run animation in the
+      IPython console. Either do `%matplotlib qt` or change the setting:
+      Tools > Preferences > IPython Console > Graphics > Backend
+      from "Inline" to "Automatic"
+      *** nope, still has problems and suspect it's in here...
+
 @author: cepuuher
 Surface wireframe plot adapted from
 http://scicomp.stackexchange.com/questions/7030\
@@ -50,6 +56,7 @@ def animate_it(u_soln, v_soln, style="surface", stride=1):
         surf = ax.plot_surface([], [], [])
     if style == "flat":
         colourmap = plt.pcolormesh(X, Y, v_soln[:, :, 0])
+
     ax.set_zlim(0, 5)  # TODO might want to let this go unconstrained
 
     def update(t, ax, fig):  # we had called analogous function "animate" in 1d
